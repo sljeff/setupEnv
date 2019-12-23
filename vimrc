@@ -107,3 +107,5 @@ nnoremap <silent> <F2> :LspRename<CR>
 nnoremap <silent> ld :LspDocumentDiagnostics<CR>
 nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
 nnoremap m :noh<CR><C-w>o
+
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
