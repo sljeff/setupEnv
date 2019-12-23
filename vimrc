@@ -61,6 +61,7 @@ NeoBundleCheck
 "End NeoBundle Scripts-------------------------
 
 set nu
+set rnu
 " set cc=88
 set hlsearch
 set incsearch
