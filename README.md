@@ -250,7 +250,7 @@ kubectl version
 ```
 # ~/.kube/config
 ```
-## [stren](https://github.com/wercker/stern)
+## [stern](https://github.com/wercker/stern)
 
 ```
 brew install stern
