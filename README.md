@@ -60,6 +60,20 @@ source ~/.config/fish/config.fish
 
 set-window-option -g prefix C-z
 set-option -g mode-keys vi
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+set -g @plugin 'tmux-plugins/tmux-pain-control'
+
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'tmux-plugins/tmux-copycat'
+
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+run -b '~/.tmux/plugins/tpm/tpm'
+
 tmux
 ```
 
@@ -235,4 +249,11 @@ kubectl version
 
 ```
 # ~/.kube/config
+```
+## [stren](https://github.com/wercker/stern)
+
+```
+brew install stern
+
+https://github.com/wercker/stern/releases
 ```
