@@ -186,7 +186,7 @@ bash
 curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
 ```
 
-## [go-swagger Binary](https://github.com/go-swagger/go-swagger/releases)
+## go-swagger [Binary](https://github.com/go-swagger/go-swagger/releases)
 
 ```
 chmod +x swagger_?_?
@@ -265,4 +265,10 @@ kubectl version
 brew install stern
 
 https://github.com/wercker/stern/releases
+```
+
+## k9s [Binary](https://github.com/derailed/k9s/releases)
+
+```
+brew install derailed/k9s/k9s
 ```
