@@ -144,7 +144,16 @@ pyenv init - | source
 pyenv install 3.8.1
 pyenv global 3.8.1
 pip install -U pip
-pip install ipython python-language-server
+pip install ipython flake8 python-language-server
+
+# ~/.config/pycodestyle
+[pycodestyle]
+ignore = E203, E266, E501, W503, B950
+max-line-length = 90
+max-complexity = 18
+select = B,C,E,F,W,T4,B9
+exclude = .git,protos
+
 vim a.py # check pyls, enable tabnine sem
 ```
 
