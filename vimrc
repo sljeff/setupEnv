@@ -18,17 +18,8 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
 NeoBundle 'flazz/vim-colorschemes'
-
-" NeoBundle 'davidhalter/jedi-vim'
-
-" Do not load vim-pyenv until *.py is opened and
-" make sure that it is loaded after jedi-vim is loaded.
-" NeoBundleLazy 'lambdalisue/vim-pyenv', {
-"         \ 'depends': ['davidhalter/jedi-vim'],
-"         \ 'autoload': {
-"         \   'filetypes': ['python', 'python3'],
-"         \ }}
 
 NeoBundle 'stephpy/vim-yaml'
 
@@ -36,7 +27,6 @@ NeoBundle 'jiangmiao/auto-pairs'
 
 NeoBundle 'bsdelf/bufferhint'
 nnoremap - :call bufferhint#Popup()<CR>
-" NeoBundle 'scrooloose/nerdtree'
 
 NeoBundle 'zxqfl/tabnine-vim'
 
@@ -48,6 +38,9 @@ NeoBundle 'prabirshrestha/vim-lsp'
 
 " (Optional) Multi-entry selection UI.
 NeoBundle 'junegunn/fzf'
+
+NeoBundle 'luochen1990/rainbow'
+let g:rainbow_active = 1
 
 " Required:
 call neobundle#end()
@@ -73,13 +66,6 @@ set backspace=indent,eol,start
 " Required for operations modifying multiple buffers like rename.
 set hidden
 
-" let g:LanguageClient_serverCommands = {
-"     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-"     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-"     \ 'python': ['/home/jeff/.pyenv/shims/pyls'],
-"     \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-"     \ }
 if executable('pyls')
     " pip install python-language-server
     au User lsp_setup call lsp#register_server({
@@ -97,16 +83,11 @@ if executable('gopls')
         \ })
 endif
 
-" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-" nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 nnoremap <silent> gd :LspDefinition<CR>
 nnoremap <silent> gi :LspImplementation<CR>
 nnoremap <silent> K :LspHover<CR>
 nnoremap <silent> <F2> :LspRename<CR>
-nnoremap <silent> ld :LspDocumentDiagnostics<CR>
 nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
 nnoremap m :noh<CR><C-w>o
-
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
+nnoremap <C-n> :LspNextDiagnostic<CR>
+nnoremap <C-m>d :LspDocumentDiagnostics<CR>
