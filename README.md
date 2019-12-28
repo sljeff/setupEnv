@@ -252,8 +252,11 @@ sudo chown root:docker /var/run/docker.sock
 ## run mysql/redis
 
 ```bash
-docker run -d -p 6379:6379 redis:4
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypassword mysql:latest
+docker run -d -p 6379:6379 --name=redis redis:4
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypassword --name=mysql mysql:latest
+# sudo vim /etc/hosts
+127.0.0.1 mysql
+127.0.0.1 redis
 ```
 
 # 7. [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
