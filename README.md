@@ -55,11 +55,15 @@ source ~/.config/fish/config.fish
 
 ## tmux
 
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
 ```
 # ~/.tmux.conf
 
-set-window-option -g prefix C-z
-set-option -g mode-keys vi
+set -g prefix C-z
+set -g mode-keys vi
 
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -75,6 +79,7 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 run -b '~/.tmux/plugins/tpm/tpm'
 
 tmux
+# install plugins: prefix + I
 ```
 
 # 2. git
