@@ -27,6 +27,9 @@ brew install fish
 sudo apt-add-repository ppa:fish-shell/release-3
 sudo apt-get update
 sudo apt-get install fish
+
+# ~/.config/fish/config.fish
+export EDITOR="vim"
 ```
 
 ```bash
@@ -45,8 +48,11 @@ curl -fsSL https://starship.rs/install.sh | sudo bash  # sudo?
 
 ```bash
 # ~/.config/fish/config.fish
-
 starship init fish | source
+
+# ~/.config/starship.toml
+[kubernetes]
+disabled=false
 ```
 
 ```bash
@@ -100,6 +106,10 @@ git clone git@github.com:sljeff/setupEnv.git
 # ~/.gitconfig
 [url "ssh://git@my.git.host/"]
         insteadOf = https://my.git.host/
+[push]
+        default = current
+[core]
+        editor = vim
 ```
 
 # 3. vim
