@@ -282,7 +282,13 @@ kubectl version
 ```
 brew install stern
 
-https://github.com/wercker/stern/releases
+# https://github.com/wercker/stern/releases
+```
+
+## [kubectl-debug](https://github.com/aylei/kubectl-debug/blob/master/docs/zh-cn.md#%E5%AE%89%E8%A3%85-kubectl-debug-%E6%8F%92%E4%BB%B6)
+
+```
+brew install aylei/tap/kubectl-debug
 ```
 
 ## k9s [Binary](https://github.com/derailed/k9s/releases)
