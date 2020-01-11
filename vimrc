@@ -42,6 +42,10 @@ NeoBundle 'junegunn/fzf'
 NeoBundle 'luochen1990/rainbow'
 let g:rainbow_active = 1
 
+NeoBundle 'skywind3000/vim-terminal-help'
+let g:terminal_shell = "fish"
+let g:terminal_kill = "term"
+
 " Required:
 call neobundle#end()
 
