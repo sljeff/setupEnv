@@ -29,7 +29,7 @@ sudo apt-get update
 sudo apt-get install fish
 
 # ~/.config/fish/config.fish
-export EDITOR="vim"
+export EDITOR="nvim"
 ```
 
 ```bash
@@ -109,35 +109,47 @@ git clone git@github.com:sljeff/setupEnv.git
 [push]
         default = current
 [core]
-        editor = vim
+        editor = nvim
 ```
 
-# 3. vim
+# 3. neovim
 
-## Newest vim
+## Newest neovim
 
 ```bash
-brew install vim
-
-sudo add-apt-repository ppa:jonathonf/vim
-sudo apt install vim
+https://github.com/neovim/neovim/releases/
 ```
 
-## [NeoBundle](https://github.com/Shougo/neobundle.vim)
+## [dein.vim](https://github.com/Shougo/dein.vim)
 
 ```bash
-curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh
-bash install.sh
+curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
+sh ./installer.sh ~/.cache/dein
 ```
 
 ## VIMRC
 
-**[COPY .vimrc](./vimrc)**
+**COPY [.vimrc](./vimrc)** to your ~/.config/nvim/init.vim
+
+open `nvim` and
 
 ```
-vim
-# press y and waiting for installation
+:call dein#update()
 ```
+
+Some information about keys in this vimrc:
+
+- leader key is `SPACE`
+- search `nnoremap` and check key mapping (exclude thus in `s:denite_my_settings` and `s:defx_my_settings`)
+- `nnoremap` in `s:denite_my_settings` are for denite window
+- `nnoremap` in `s:defx_my_settings` are for defx window (file explorer)
+- keys for terminal: check [skywind3000/vim-terminal-help](https://github.com/skywind3000/vim-terminal-help)
+
+# 3.1 [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
+
+- [Download](https://github.com/ryanoasis/nerd-fonts#patched-fonts) one font you like.
+- Install on your OS
+- use the font in terminal
 
 # 4. python
 
@@ -169,7 +181,7 @@ max-complexity = 18
 select = B,C,E,F,W,T4,B9
 exclude = .git,protos
 
-vim a.py # check pyls, enable tabnine sem
+nvim a.py # check pyls, enable tabnine sem
 ```
 
 # 5. [go](https://golang.org/doc/install)
@@ -188,7 +200,7 @@ export GOPRIVATE="my.git.host"
 
 go get golang.org/x/tools/gopls@latest
 go get github.com/go-delve/delve/cmd/dlv
-vim a.go # check gopls, enable tabnine sem
+nvim a.go # check gopls, enable tabnine sem
 ```
 
 ## [golangci-lint](https://github.com/golangci/golangci-lint#binary)
@@ -254,7 +266,7 @@ sudo chown root:docker /var/run/docker.sock
 ```bash
 docker run -d -p 6379:6379 --name=redis redis:4
 docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypassword --name=mysql mysql:latest
-# sudo vim /etc/hosts
+# sudo nvim /etc/hosts
 127.0.0.1 mysql
 127.0.0.1 redis
 ```
