@@ -1,5 +1,3 @@
-let mapleader=" "
-
 if &compatible
   set nocompatible               " Be iMproved
 endif
@@ -26,26 +24,13 @@ if dein#load_state('/home/jeff/.cache/dein')
   " LSP
   call dein#add('prabirshrestha/async.vim')
   call dein#add('prabirshrestha/vim-lsp')
-  nnoremap <silent> gd :LspDefinition<CR>
-  nnoremap <silent> gi :LspImplementation<CR>
-  nnoremap <silent> K :LspHover<CR>
-  nnoremap <silent> <F2> :LspRename<CR>
-  nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
-  nnoremap <Leader><C-n> :LspNextDiagnostic<CR>
-  nnoremap <C-m>d :LspDocumentDiagnostics<CR>
   
   " (Optional) Multi-entry selection UI.
   call dein#add('junegunn/fzf')
   
   call dein#add('luochen1990/rainbow')
-  let g:rainbow_active = 0
   
   call dein#add('skywind3000/vim-terminal-help')
-  let g:terminal_shell = "fish"
-  let g:terminal_kill = "term"
-  let g:terminal_list = 0
-  let g:terminal_cwd = 2
-  " let g:terminal_edit = 'e'  " do not use drop
 
   call dein#add('itchyny/lightline.vim')
   call dein#add('mengelbrecht/lightline-bufferline')
@@ -66,25 +51,45 @@ if dein#load_state('/home/jeff/.cache/dein')
   endif
 
   call dein#add('kristijanhusak/defx-git')
-  let g:defx_git#indicators = {
-    \ 'Modified'  : 'M',
-    \ 'Staged'    : '+',
-    \ 'Untracked' : '?',
-    \ 'Renamed'   : '➜',
-    \ 'Unmerged'  : '=',
-    \ 'Ignored'   : '.',
-    \ 'Deleted'   : 'X',
-    \ 'Unknown'   : 'e'
-    \ }
-  let g:defx_git#column_length = 0
 
   call dein#add('kristijanhusak/defx-icons')
-  let g:defx_icons_enable_syntax_highlight = 1
 
   " Required:
   call dein#end()
   call dein#save_state()
 endif
+
+let mapleader=" "
+
+" lsp
+nnoremap <silent> gd :LspDefinition<CR>
+nnoremap <silent> gi :LspImplementation<CR>
+nnoremap <silent> K :LspHover<CR>
+nnoremap <silent> <F2> :LspRename<CR>
+nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
+nnoremap <Leader><C-n> :LspNextDiagnostic<CR>
+nnoremap <C-m>d :LspDocumentDiagnostics<CR>
+
+let g:rainbow_active = 0
+
+let g:terminal_shell = "fish"
+let g:terminal_kill = "term"
+let g:terminal_list = 0
+let g:terminal_cwd = 2
+let g:terminal_edit = 'e'
+
+let g:defx_git#indicators = {
+  \ 'Modified'  : 'M',
+  \ 'Staged'    : '+',
+  \ 'Untracked' : '?',
+  \ 'Renamed'   : '➜',
+  \ 'Unmerged'  : '=',
+  \ 'Ignored'   : '.',
+  \ 'Deleted'   : 'X',
+  \ 'Unknown'   : 'e'
+  \ }
+let g:defx_git#column_length = 0
+let g:defx_icons_enable_syntax_highlight = 1
 
 " Required:
 filetype plugin indent on
@@ -110,11 +115,13 @@ let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
 let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
 
+" buffer line
 nnoremap <Leader>m :noh<CR>
 nnoremap <Leader>n :bn<cr>
 nnoremap <Leader>p :bp<cr>
 nnoremap <Leader>d :bd<cr>
 
+" denite
 call denite#custom#alias('source', 'file/rec/git', 'file/rec')
 call denite#custom#var('file/rec/git', 'command', ['git', 'ls-files', '-co', '--exclude-standard'])
 nnoremap <Leader>, :Denite buffer<CR>
@@ -129,6 +136,7 @@ function! s:denite_my_settings() abort
   nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
 endfunction
 
+" defx
 nnoremap <silent> - :Defx -split=vertical -winwidth=30 -toggle -resume -columns=git:icons:indent:filename:type<CR>
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
