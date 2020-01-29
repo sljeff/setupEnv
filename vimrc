@@ -137,7 +137,7 @@ function! s:denite_my_settings() abort
 endfunction
 
 " defx
-nnoremap <silent> - :Defx -split=vertical -winwidth=30 -toggle -resume -columns=git:icons:indent:filename:type<CR>
+nnoremap <silent> - :Defx -split=vertical -winwidth=30 -toggle -resume -columns=git:indent:icons:filename:type<CR>
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
   setl nospell
