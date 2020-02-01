@@ -19,8 +19,18 @@ if dein#load_state('/home/jeff/.cache/dein')
   
   call dein#add('jiangmiao/auto-pairs')
   
-  call dein#add('zxqfl/tabnine-vim')
-  
+  " call dein#add('zxqfl/tabnine-vim')
+  call dein#add('Shougo/deoplete.nvim')
+  if !has('nvim')
+    call dein#add('roxma/nvim-yarp')
+    call dein#add('roxma/vim-hug-neovim-rpc')
+  endif
+  if has('win32') || has('win64')
+    call dein#add('tbodt/deoplete-tabnine', { 'build': 'powershell.exe .\install.ps1' })
+  else
+    call dein#add('tbodt/deoplete-tabnine', { 'build': './install.sh' })
+  endif
+
   " LSP
   call dein#add('prabirshrestha/async.vim')
   call dein#add('prabirshrestha/vim-lsp')
@@ -60,6 +70,12 @@ if dein#load_state('/home/jeff/.cache/dein')
 endif
 
 let mapleader=" "
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+call deoplete#custom#option({
+\ 'prev_completion_mode': "mirror",
+\ })
 
 " lsp
 nnoremap <silent> gd :LspDefinition<CR>
