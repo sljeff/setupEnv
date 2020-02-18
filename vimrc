@@ -64,6 +64,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('kristijanhusak/defx-icons')
 
+  call dein#add('mhinz/vim-startify')
+
   " Required:
   call dein#end()
   call dein#save_state()
@@ -115,13 +117,14 @@ set noshowmode
 set showtabline=2
 autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 let g:lightline#bufferline#filename_modifier = ':t'
-let g:lightline#bufferline#shorten_path = 0
+let g:lightline#bufferline#shorten_path = 1
 let g:lightline#bufferline#show_number  = 2
 let g:lightline#bufferline#unnamed      = '[No Name]'
 let g:lightline = {
+    \ 'colorscheme': 'PaperColor',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+    \             [ 'gitbranch', 'readonly', 'absolutepath', 'modified' ] ]
     \ },
     \ 'component_function': {
     \   'gitbranch': 'gitbranch#name'
@@ -141,7 +144,7 @@ nnoremap <Leader>d :bd<cr>
 call denite#custom#alias('source', 'file/rec/git', 'file/rec')
 call denite#custom#var('file/rec/git', 'command', ['git', 'ls-files', '-co', '--exclude-standard'])
 nnoremap <Leader>, :Denite buffer<CR>
-nnoremap <Leader><Space> :Denite -auto-action=preview `finddir('.git', ';') != '' ? 'file/rec/git' : 'file/rec'`<CR>
+nnoremap <Leader><Space> :Denite `finddir('.git', ';') != '' ? 'file/rec/git' : 'file/rec'`<CR>
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort
   nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action', 'switch')
@@ -153,7 +156,15 @@ function! s:denite_my_settings() abort
 endfunction
 
 " defx
-nnoremap <silent> - :Defx -split=vertical -winwidth=30 -toggle -resume -columns=git:indent:icons:filename:type<CR>
+call defx#custom#option('_', {
+	\ 'ignored_files': '__pycache__,*.pyc,*.swp,.*',
+	\ 'split': 'vertical',
+	\ 'winwidth': 25,
+	\ 'toggle': 1,
+	\ 'resume': 1,
+	\ 'columns': 'git:indent:icons:filename:type',
+	\ })
+nnoremap <silent> - :Defx<CR>
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
   setl nospell
@@ -166,6 +177,8 @@ function! s:defx_my_settings() abort
   nnoremap <silent><buffer><expr> s defx#do_action('drop', 'split')
   nnoremap <silent><buffer><expr> v defx#do_action('drop', 'vsplit')
   nnoremap <silent><buffer><expr> M defx#do_action('rename')
+  nnoremap <silent><buffer><expr> N defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> D defx#do_action('remove')
   nnoremap <silent><buffer><expr> o defx#do_action('open_or_close_tree')
   nnoremap <silent><buffer><expr> <TAB> defx#do_action('open_or_close_tree')
   nnoremap <silent><buffer><expr> O defx#do_action('open_tree_recursive')
@@ -185,7 +198,8 @@ set backspace=indent,eol,start
 set hidden
 set encoding=utf-8
 
-colorscheme seattle
+colorscheme PaperColor
+set background=light
 
 if executable('pyls')
     " pip install python-language-server
