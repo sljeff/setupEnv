@@ -82,6 +82,8 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 
+set -g @plugin 'jimeh/tmux-themepack'
+
 run -b '~/.tmux/plugins/tpm/tpm'
 
 tmux
