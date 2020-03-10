@@ -70,6 +70,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 set -g prefix C-z
 set -g mode-keys vi
+# set -g default-shell /usr/bin/fish
+set -g @themepack-status-right-area-middle-format "%H:%M"
 
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
