@@ -312,3 +312,9 @@ brew install aylei/tap/kubectl-debug
 ```
 brew install derailed/k9s/k9s
 ```
+
+## [ksd](https://github.com/mfuentesg/ksd)
+
+```
+go get github.com/mfuentesg/ksd
+```
