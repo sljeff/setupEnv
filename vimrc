@@ -66,6 +66,10 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('mhinz/vim-startify')
 
+  call dein#add('liuchengxu/vista.vim')
+
+  call dein#add('pseewald/vim-anyfold')
+
   " Required:
   call dein#end()
   call dein#save_state()
@@ -75,6 +79,7 @@ let mapleader=" "
 
 " deoplete
 let g:deoplete#enable_at_startup = 1
+set completeopt=menu,noselect
 call deoplete#custom#option({
 \ 'prev_completion_mode': "mirror",
 \ })
@@ -95,6 +100,7 @@ let g:terminal_kill = "term"
 let g:terminal_list = 0
 let g:terminal_cwd = 2
 let g:terminal_edit = 'e'
+let g:terminal_height = 30
 
 let g:defx_git#indicators = {
   \ 'Modified'  : 'M',
@@ -113,6 +119,21 @@ let g:defx_icons_enable_syntax_highlight = 1
 filetype plugin indent on
 syntax enable
 
+" anyfold
+autocmd Filetype * AnyFoldActivate               " activate for all filetypes
+set foldlevel=1 " Open all folds
+
+" vista
+let g:vista_default_executive = 'ctags'
+let g:vista_executive_for = {
+  \ 'go': 'vim_lsp',
+  \ 'python': 'vim_lsp',
+  \ }
+let g:vista#renderer#enable_icon = 1
+let g:vista_sidebar_position = "rightbelow"
+nnoremap = :Vista finder<cr>
+nnoremap <Leader>= :Vista!!<cr>
+
 set noshowmode
 set showtabline=2
 autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
@@ -124,21 +145,40 @@ let g:lightline = {
     \ 'colorscheme': 'PaperColor',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'gitbranch', 'readonly', 'absolutepath', 'modified' ] ]
+    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'gitbranch#name'
+    \   'gitbranch': 'gitbranch#name',
+    \   'filename': 'LightlineFilename'
     \ },
     \ }
 let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
 let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
+function! LightlineFilename()
+  let root = fnamemodify(get(b:, 'gitbranch_path'), ':h:h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
 
 " buffer line
 nnoremap <Leader>m :noh<CR>
 nnoremap <Leader>n :bn<cr>
 nnoremap <Leader>p :bp<cr>
 nnoremap <Leader>d :bd<cr>
+nmap <Leader>1 <Plug>lightline#bufferline#go(1)
+nmap <Leader>2 <Plug>lightline#bufferline#go(2)
+nmap <Leader>3 <Plug>lightline#bufferline#go(3)
+nmap <Leader>4 <Plug>lightline#bufferline#go(4)
+nmap <Leader>5 <Plug>lightline#bufferline#go(5)
+nmap <Leader>6 <Plug>lightline#bufferline#go(6)
+nmap <Leader>7 <Plug>lightline#bufferline#go(7)
+nmap <Leader>8 <Plug>lightline#bufferline#go(8)
+nmap <Leader>9 <Plug>lightline#bufferline#go(9)
+nmap <Leader>0 <Plug>lightline#bufferline#go(10)
 
 " denite
 call denite#custom#alias('source', 'file/rec/git', 'file/rec')
