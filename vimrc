@@ -70,6 +70,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('pseewald/vim-anyfold')
 
+  call dein#add('itchyny/vim-cursorword')
+
   " Required:
   call dein#end()
   call dein#save_state()
