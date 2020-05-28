@@ -72,6 +72,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('itchyny/vim-cursorword')
 
+  call dein#add('wakatime/vim-wakatime')
+
   " Required:
   call dein#end()
   call dein#save_state()
