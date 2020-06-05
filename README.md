@@ -130,6 +130,9 @@ https://github.com/neovim/neovim/releases/
 curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
 sh ./installer.sh ~/.cache/dein
 ```
+```bash
+pip3 install --user pynvim
+```
 
 ## VIMRC
 
