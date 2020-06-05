@@ -87,7 +87,9 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'jimeh/tmux-themepack'
 
 run -b '~/.tmux/plugins/tpm/tpm'
+```
 
+```bash
 tmux
 # install plugins: prefix + I
 ```
