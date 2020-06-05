@@ -254,7 +254,7 @@ if executable('pyls')
         \ })
 endif
 if executable('gopls')
-    " pip install python-language-server
+    " go get golang.org/x/tools/gopls@latest
     au User lsp_setup call lsp#register_server({
         \ 'name': 'gopls',
         \ 'cmd': {server_info->['gopls']},
