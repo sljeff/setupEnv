@@ -91,6 +91,8 @@ call deoplete#custom#option({
 " lsp
 nnoremap <silent> gd :LspDefinition<CR>
 nnoremap <silent> gi :LspImplementation<CR>
+nnoremap <silent> gr :LspReferences<CR>
+nnoremap <silent> gs :LspWorkspaceSymbol<CR>
 nnoremap <silent> K :LspHover<CR>
 nnoremap <silent> <F2> :LspRename<CR>
 nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
