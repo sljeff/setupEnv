@@ -52,8 +52,6 @@ if dein#load_state('/home/jeff/.cache/dein')
     call dein#add('roxma/vim-hug-neovim-rpc')
   endif
 
-  call dein#add('thaerkh/vim-indentguides')
-
   call dein#add('Shougo/defx.nvim')
   if !has('nvim')
     call dein#add('roxma/nvim-yarp')
