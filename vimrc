@@ -44,7 +44,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('itchyny/lightline.vim')
   call dein#add('mengelbrecht/lightline-bufferline')
-  call dein#add('itchyny/vim-gitbranch')
+
+  call dein#add('tpope/vim-fugitive')
 
   call dein#add('Shougo/denite.nvim')
   if !has('nvim')
@@ -126,7 +127,7 @@ syntax enable
 
 " anyfold
 autocmd Filetype * AnyFoldActivate               " activate for all filetypes
-set foldlevel=1 " Open all folds
+set foldlevel=99 " Open all folds
 
 " vista
 let g:vista_default_executive = 'ctags'
@@ -146,16 +147,23 @@ let g:lightline#bufferline#filename_modifier = ':t'
 let g:lightline#bufferline#shorten_path = 1
 let g:lightline#bufferline#show_number  = 2
 let g:lightline#bufferline#unnamed      = '[No Name]'
+let g:lightline#bufferline#unicode_symbols = 1
 let g:lightline = {
     \ 'colorscheme': 'PaperColor',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+    \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'component': {
+    \   'lineinfo': ' %3l:%-2v',
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'gitbranch#name',
-    \   'filename': 'LightlineFilename'
+    \   'filename': 'LightlineFilename',
+    \   'readonly': 'LightlineReadonly',
+    \   'fugitive': 'LightlineFugitive'
     \ },
+    \ 'separator': { 'left': '', 'right': '' },
+    \ 'subseparator': { 'left': '', 'right': '' }
     \ }
 let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
 let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
@@ -167,6 +175,16 @@ function! LightlineFilename()
     return path[len(root)+1:]
   endif
   return expand('%')
+endfunction
+function! LightlineReadonly()
+	return &readonly ? '' : ''
+endfunction
+function! LightlineFugitive()
+	if exists('*FugitiveHead')
+		let branch = FugitiveHead()
+		return branch !=# '' ? ''.branch : ''
+	endif
+	return ''
 endfunction
 
 " buffer line
@@ -196,7 +214,7 @@ function! s:denite_my_settings() abort
   nnoremap <silent><buffer><expr> s denite#do_map('do_action', 'splitswitch')
   nnoremap <silent><buffer><expr> v denite#do_map('do_action', 'vsplitswitch')
   nnoremap <silent><buffer><expr> d denite#do_map('do_action', 'delete')
-  nnoremap <silent><buffer><expr> q denite#do_map('quit')
+  nnoremap <silent><buffer><expr> gq denite#do_map('quit')
   nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
 endfunction
 
@@ -228,7 +246,7 @@ function! s:defx_my_settings() abort
   nnoremap <silent><buffer><expr> <TAB> defx#do_action('open_or_close_tree')
   nnoremap <silent><buffer><expr> O defx#do_action('open_tree_recursive')
   nnoremap <silent><buffer><expr> R defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> q defx#do_action('quit')
+  nnoremap <silent><buffer><expr> gq defx#do_action('quit')
   nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
 endfunction
 
@@ -236,6 +254,7 @@ set nu
 set rnu
 set hlsearch
 set incsearch
+set nowrap
 
 set backspace=indent,eol,start
 
