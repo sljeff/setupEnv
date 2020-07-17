@@ -69,7 +69,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('pseewald/vim-anyfold')
 
-  call dein#add('itchyny/vim-cursorword')
+  " call dein#add('itchyny/vim-cursorword')
+  call dein#add('RRethy/vim-illuminate')
 
   call dein#add('wakatime/vim-wakatime')
 
