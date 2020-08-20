@@ -51,8 +51,35 @@ curl -fsSL https://starship.rs/install.sh | sudo bash  # sudo?
 starship init fish | source
 
 # ~/.config/starship.toml
+# Don't print a new line at the start of the prompt
+add_newline = true
+
+[directory]
+style = "bg:white bold fg:black"
+
+# Replace the "❯" symbol in the prompt with "➜"
+[character]      # The name of the module we are configuring is "character"
+symbol = "➜"     # The "symbol" segment is being set to "➜"
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
 [kubernetes]
-disabled=false
+disabled = false
+
+# [memory_usage]
+# disabled = false
+
+[time]
+disabled = false
+style = "bold blue"
+
+[python]
+style = "bold blue"
+
+[cmd_duration]
+style = "bold blue"
 ```
 
 ```bash
