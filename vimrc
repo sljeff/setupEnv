@@ -70,7 +70,7 @@ if dein#load_state('/home/jeff/.cache/dein')
   call dein#add('pseewald/vim-anyfold')
 
   " call dein#add('itchyny/vim-cursorword')
-  call dein#add('RRethy/vim-illuminate')
+  " call dein#add('RRethy/vim-illuminate')
 
   call dein#add('wakatime/vim-wakatime')
 
@@ -99,6 +99,8 @@ nnoremap <silent> <F2> :LspRename<CR>
 nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
 nnoremap <Leader><C-n> :LspNextDiagnostic<CR>
 nnoremap <C-m>d :LspDocumentDiagnostics<CR>
+let g:lsp_document_code_action_signs_enabled = 0
+nnoremap <Leader>f :LspCodeAction refactor.rewrite<CR>
 
 let g:rainbow_active = 0
 
