@@ -19,22 +19,13 @@ if dein#load_state('/home/jeff/.cache/dein')
   
   call dein#add('jiangmiao/auto-pairs')
   
-  " call dein#add('zxqfl/tabnine-vim')
-  call dein#add('Shougo/deoplete.nvim')
-  if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-  endif
-  if has('win32') || has('win64')
-    call dein#add('tbodt/deoplete-tabnine', { 'build': 'powershell.exe .\install.ps1' })
-  else
-    call dein#add('tbodt/deoplete-tabnine', { 'build': './install.sh' })
-  endif
+  call dein#add('nvim-lua/completion-nvim')
+  call dein#add('aca/completion-tabnine')
+  call dein#add('kristijanhusak/completion-tags')
 
   " LSP
-  call dein#add('prabirshrestha/async.vim')
-  call dein#add('prabirshrestha/vim-lsp')
-  
+  call dein#add('neovim/nvim-lspconfig')
+
   " (Optional) Multi-entry selection UI.
   call dein#add('junegunn/fzf')
   
@@ -74,6 +65,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('wakatime/vim-wakatime')
 
+  call dein#add('Vimjas/vim-python-pep8-indent')
+
   " Required:
   call dein#end()
   call dein#save_state()
@@ -81,26 +74,66 @@ endif
 
 let mapleader=" "
 
-" deoplete
-let g:deoplete#enable_at_startup = 1
-set completeopt=menu,noselect
-call deoplete#custom#option({
-\ 'prev_completion_mode': "mirror",
-\ })
+" completion
+autocmd BufEnter * lua require'completion'.on_attach()
+set completeopt=menuone,noinsert,noselect
+set shortmess+=c
+let g:completion_enable_auto_popup = 1
+let g:completion_enable_auto_hover = 1
+let g:completion_enable_auto_signature = 1
+let g:completion_chain_complete_list = {
+      \ 'default': [
+      \    {'complete_items': ['tabnine', 'lsp', 'tags']},
+      \  ]}
+let g:completion_confirm_key = ""
+let g:completion_sorting = "none"
+let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/3.5.15/binaries/TabNine"
+let g:completion_tabnine_sort_by_details=1
+let g:completion_tabnine_priority = 1000
 
 " lsp
-nnoremap <silent> gd :LspDefinition<CR>
-nnoremap <silent> gi :LspImplementation<CR>
-nnoremap <silent> gr :LspReferences<CR>
-nnoremap <silent> gs :LspWorkspaceSymbol<CR>
-nnoremap <silent> gt :LspTypeDefinition<CR>
-nnoremap <silent> K :LspHover<CR>
-nnoremap <silent> <F2> :LspRename<CR>
-nnoremap <silent> df :LspDocumentFormat<CR>:w<CR>
-nnoremap <Leader><C-n> :LspNextDiagnostic<CR>
-nnoremap <C-m>d :LspDocumentDiagnostics<CR>
-let g:lsp_document_code_action_signs_enabled = 0
-nnoremap <Leader>f :LspCodeAction refactor.rewrite<CR>
+lua << EOF
+local nvim_lsp = require('lspconfig')
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space><C-p>', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+end
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { "pyls", "clangd", "gopls" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+EOF
 
 let g:rainbow_active = 0
 
@@ -135,8 +168,8 @@ set foldlevel=99 " Open all folds
 " vista
 let g:vista_default_executive = 'ctags'
 let g:vista_executive_for = {
-  \ 'go': 'vim_lsp',
-  \ 'python': 'vim_lsp',
+  \ 'go': 'nvim_lsp',
+  \ 'python': 'nvim_lsp',
   \ }
 let g:vista#renderer#enable_icon = 1
 let g:vista_sidebar_position = "rightbelow"
@@ -257,7 +290,7 @@ set nu
 set rnu
 set hlsearch
 set incsearch
-set nowrap
+" set nowrap
 
 set backspace=indent,eol,start
 
@@ -267,20 +300,3 @@ set encoding=utf-8
 
 colorscheme PaperColor
 set background=light
-
-if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-if executable('gopls')
-    " go get golang.org/x/tools/gopls@latest
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'gopls',
-        \ 'cmd': {server_info->['gopls']},
-        \ 'whitelist': ['go'],
-        \ })
-endif
