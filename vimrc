@@ -44,15 +44,8 @@ if dein#load_state('/home/jeff/.cache/dein')
     call dein#add('roxma/vim-hug-neovim-rpc')
   endif
 
-  call dein#add('Shougo/defx.nvim')
-  if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-  endif
-
-  call dein#add('kristijanhusak/defx-git')
-
-  call dein#add('kristijanhusak/defx-icons')
+  call dein#add('kyazdani42/nvim-web-devicons') " for file icons
+  call dein#add('kyazdani42/nvim-tree.lua')
 
   call dein#add('mhinz/vim-startify')
 
@@ -87,7 +80,7 @@ let g:completion_chain_complete_list = {
       \  ]}
 let g:completion_confirm_key = ""
 let g:completion_sorting = "none"
-let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/3.5.15/binaries/TabNine"
+let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/completion-tabnine/binaries/TabNine_Linux"
 let g:completion_tabnine_sort_by_details=1
 let g:completion_tabnine_priority = 1000
 
@@ -124,13 +117,13 @@ local on_attach = function(client, bufnr)
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "pyls", "clangd", "gopls" }
+local servers = { "pylsp", "clangd", "gopls" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
-    }
+    },
   }
 end
 EOF
@@ -143,19 +136,6 @@ let g:terminal_list = 0
 let g:terminal_cwd = 2
 let g:terminal_edit = 'e'
 let g:terminal_height = 30
-
-let g:defx_git#indicators = {
-  \ 'Modified'  : 'M',
-  \ 'Staged'    : '+',
-  \ 'Untracked' : '?',
-  \ 'Renamed'   : '➜',
-  \ 'Unmerged'  : '=',
-  \ 'Ignored'   : '.',
-  \ 'Deleted'   : 'X',
-  \ 'Unknown'   : 'e'
-  \ }
-let g:defx_git#column_length = 0
-let g:defx_icons_enable_syntax_highlight = 1
 
 " Required:
 filetype plugin indent on
@@ -254,37 +234,14 @@ function! s:denite_my_settings() abort
   nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
 endfunction
 
-" defx
-call defx#custom#option('_', {
-	\ 'ignored_files': '__pycache__,*.pyc,*.swp,.*',
-	\ 'split': 'vertical',
-	\ 'winwidth': 25,
-	\ 'toggle': 1,
-	\ 'resume': 1,
-	\ 'columns': 'git:indent:icons:filename:type',
-	\ })
-nnoremap <silent> - :Defx<CR>
-autocmd FileType defx call s:defx_my_settings()
-function! s:defx_my_settings() abort
-  setl nospell
-  setl nonu nornu
-  setl signcolumn=no
-  nnoremap <silent><buffer><expr> <CR>
-    \ defx#is_directory() ?
-    \ defx#do_action('open_or_close_tree') :
-    \ defx#do_action('drop')
-  nnoremap <silent><buffer><expr> s defx#do_action('drop', 'split')
-  nnoremap <silent><buffer><expr> v defx#do_action('drop', 'vsplit')
-  nnoremap <silent><buffer><expr> M defx#do_action('rename')
-  nnoremap <silent><buffer><expr> N defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> D defx#do_action('remove')
-  nnoremap <silent><buffer><expr> o defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> <TAB> defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> O defx#do_action('open_tree_recursive')
-  nnoremap <silent><buffer><expr> R defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> gq defx#do_action('quit')
-  nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
-endfunction
+" tree
+nnoremap <C-n> :NvimTreeToggle<CR>
+set termguicolors
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ]
+let g:nvim_tree_hide_dotfiles = 1
+let g:nvim_tree_git_hl = 1
+let g:nvim_tree_highlight_opened_files = 1
+let g:nvim_tree_lsp_diagnostics = 1
 
 set nu
 set rnu
