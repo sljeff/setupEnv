@@ -161,6 +161,8 @@ sh ./installer.sh ~/.cache/dein
 ```
 ```bash
 pip3 install --user pynvim
+brew install ripgrep
+sudo apt-get install ripgrep
 ```
 
 ## VIMRC

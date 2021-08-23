@@ -38,11 +38,8 @@ if dein#load_state('/home/jeff/.cache/dein')
 
   call dein#add('tpope/vim-fugitive')
 
-  call dein#add('Shougo/denite.nvim')
-  if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-  endif
+  call dein#add('nvim-lua/plenary.nvim')
+  call dein#add('nvim-telescope/telescope.nvim')
 
   call dein#add('kyazdani42/nvim-web-devicons') " for file icons
   call dein#add('kyazdani42/nvim-tree.lua')
@@ -98,21 +95,21 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  -- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '<space><C-p>', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
@@ -219,20 +216,27 @@ nmap <Leader>8 <Plug>lightline#bufferline#go(8)
 nmap <Leader>9 <Plug>lightline#bufferline#go(9)
 nmap <Leader>0 <Plug>lightline#bufferline#go(10)
 
-" denite
-call denite#custom#alias('source', 'file/rec/git', 'file/rec')
-call denite#custom#var('file/rec/git', 'command', ['git', 'ls-files', '-co', '--exclude-standard'])
-nnoremap <Leader>, :Denite buffer<CR>
-nnoremap <Leader><Space> :Denite `finddir('.git', ';') != '' ? 'file/rec/git' : 'file/rec'`<CR>
-autocmd FileType denite call s:denite_my_settings()
-function! s:denite_my_settings() abort
-  nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action', 'switch')
-  nnoremap <silent><buffer><expr> s denite#do_map('do_action', 'splitswitch')
-  nnoremap <silent><buffer><expr> v denite#do_map('do_action', 'vsplitswitch')
-  nnoremap <silent><buffer><expr> d denite#do_map('do_action', 'delete')
-  nnoremap <silent><buffer><expr> gq denite#do_map('quit')
-  nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
-endfunction
+" telescope
+nnoremap <Leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <Leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <Leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <Leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+nnoremap <Leader>ca <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
+nnoremap <C-m>d     <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<cr>
+nnoremap <C-m>a     <cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<cr>
+nnoremap gr         <cmd>lua require('telescope.builtin').lsp_references()<cr>
+nnoremap gd         <cmd>lua require('telescope.builtin').lsp_definitions()<cr>
+nnoremap gi         <cmd>lua require('telescope.builtin').lsp_implementations()<cr>
+nnoremap <Leader>gs <cmd>lua require('telescope.builtin').git_status()<cr>
+nnoremap <Leader>gb <cmd>lua require('telescope.builtin').git_branches()<cr>
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    layout_strategy = "vertical",
+    path_display = {"absolute", "shorten"}
+  }
+}
+EOF
 
 " tree
 nnoremap <C-n> :NvimTreeToggle<CR>
