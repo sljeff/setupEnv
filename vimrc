@@ -6,61 +6,58 @@ endif
 set runtimepath+=/home/jeff/.cache/dein/repos/github.com/Shougo/dein.vim
 
 " Required:
-if dein#load_state('/home/jeff/.cache/dein')
-  call dein#begin('/home/jeff/.cache/dein')
+call dein#begin('/home/jeff/.cache/dein')
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('/home/jeff/.cache/dein/repos/github.com/Shougo/dein.vim')
+" Let dein manage dein
+" Required:
+call dein#add('/home/jeff/.cache/dein/repos/github.com/Shougo/dein.vim')
 
-  call dein#add('flazz/vim-colorschemes')
-  
-  call dein#add('stephpy/vim-yaml')
-  
-  call dein#add('jiangmiao/auto-pairs')
-  
-  call dein#add('nvim-lua/completion-nvim')
-  call dein#add('aca/completion-tabnine')
-  call dein#add('kristijanhusak/completion-tags')
+call dein#add('flazz/vim-colorschemes')
 
-  " LSP
-  call dein#add('neovim/nvim-lspconfig')
+call dein#add('stephpy/vim-yaml')
 
-  " (Optional) Multi-entry selection UI.
-  call dein#add('junegunn/fzf')
-  
-  call dein#add('luochen1990/rainbow')
-  
-  call dein#add('skywind3000/vim-terminal-help')
+call dein#add('jiangmiao/auto-pairs')
 
-  call dein#add('itchyny/lightline.vim')
-  call dein#add('mengelbrecht/lightline-bufferline')
+call dein#add('nvim-lua/completion-nvim')
+call dein#add('aca/completion-tabnine')
+call dein#add('kristijanhusak/completion-tags')
 
-  call dein#add('tpope/vim-fugitive')
+" LSP
+call dein#add('neovim/nvim-lspconfig')
 
-  call dein#add('nvim-lua/plenary.nvim')
-  call dein#add('nvim-telescope/telescope.nvim')
+" (Optional) Multi-entry selection UI.
+call dein#add('junegunn/fzf')
 
-  call dein#add('kyazdani42/nvim-web-devicons') " for file icons
-  call dein#add('kyazdani42/nvim-tree.lua')
+call dein#add('luochen1990/rainbow')
 
-  call dein#add('mhinz/vim-startify')
+call dein#add('skywind3000/vim-terminal-help')
 
-  call dein#add('liuchengxu/vista.vim')
+call dein#add('itchyny/lightline.vim')
+call dein#add('mengelbrecht/lightline-bufferline')
 
-  call dein#add('pseewald/vim-anyfold')
+call dein#add('tpope/vim-fugitive')
 
-  " call dein#add('itchyny/vim-cursorword')
-  " call dein#add('RRethy/vim-illuminate')
+call dein#add('nvim-lua/plenary.nvim')
+call dein#add('nvim-telescope/telescope.nvim')
 
-  call dein#add('wakatime/vim-wakatime')
+call dein#add('kyazdani42/nvim-web-devicons') " for file icons
+call dein#add('kyazdani42/nvim-tree.lua')
 
-  call dein#add('Vimjas/vim-python-pep8-indent')
+call dein#add('mhinz/vim-startify')
 
-  " Required:
-  call dein#end()
-  call dein#save_state()
-endif
+call dein#add('liuchengxu/vista.vim')
+
+call dein#add('pseewald/vim-anyfold')
+
+" call dein#add('itchyny/vim-cursorword')
+" call dein#add('RRethy/vim-illuminate')
+
+call dein#add('wakatime/vim-wakatime')
+
+call dein#add('Vimjas/vim-python-pep8-indent')
+
+" Required:
+call dein#end()
 
 let mapleader=" "
 
@@ -77,7 +74,7 @@ let g:completion_chain_complete_list = {
       \  ]}
 let g:completion_confirm_key = ""
 let g:completion_sorting = "none"
-let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/completion-tabnine/binaries/TabNine_Linux"
+let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/completion-tabnine/binaries/3.2.28/x86_64-unknown-linux-gnu/TabNine"
 let g:completion_tabnine_sort_by_details=1
 let g:completion_tabnine_priority = 1000
 
