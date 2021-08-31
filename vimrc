@@ -1,63 +1,48 @@
-if &compatible
-  set nocompatible               " Be iMproved
-endif
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin(stdpath('data') . '/plugged')
 
-" Required:
-set runtimepath+=/home/jeff/.cache/dein/repos/github.com/Shougo/dein.vim
+Plug 'flazz/vim-colorschemes'
 
-" Required:
-call dein#begin('/home/jeff/.cache/dein')
+Plug 'stephpy/vim-yaml'
 
-" Let dein manage dein
-" Required:
-call dein#add('/home/jeff/.cache/dein/repos/github.com/Shougo/dein.vim')
+Plug 'junegunn/fzf'
 
-call dein#add('flazz/vim-colorschemes')
+Plug 'jiangmiao/auto-pairs'
 
-call dein#add('stephpy/vim-yaml')
+Plug 'neovim/nvim-lspconfig'
 
-call dein#add('jiangmiao/auto-pairs')
+Plug 'nvim-lua/completion-nvim'
+Plug 'aca/completion-tabnine', { 'do': 'version=3.1.9 ./install.sh' }
+Plug 'kristijanhusak/completion-tags'
 
-call dein#add('nvim-lua/completion-nvim')
-call dein#add('aca/completion-tabnine')
-call dein#add('kristijanhusak/completion-tags')
+Plug 'luochen1990/rainbow'
 
-" LSP
-call dein#add('neovim/nvim-lspconfig')
+Plug 'skywind3000/vim-terminal-help'
 
-" (Optional) Multi-entry selection UI.
-call dein#add('junegunn/fzf')
+Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
 
-call dein#add('luochen1990/rainbow')
+Plug 'tpope/vim-fugitive'
 
-call dein#add('skywind3000/vim-terminal-help')
+Plug 'nvim-lua/plenary.nvim' | Plug 'nvim-telescope/telescope.nvim'
 
-call dein#add('itchyny/lightline.vim')
-call dein#add('mengelbrecht/lightline-bufferline')
+Plug 'kyazdani42/nvim-web-devicons' | Plug 'kyazdani42/nvim-tree.lua'
 
-call dein#add('tpope/vim-fugitive')
+Plug 'mhinz/vim-startify'
 
-call dein#add('nvim-lua/plenary.nvim')
-call dein#add('nvim-telescope/telescope.nvim')
+Plug 'liuchengxu/vista.vim'
 
-call dein#add('kyazdani42/nvim-web-devicons') " for file icons
-call dein#add('kyazdani42/nvim-tree.lua')
+Plug 'pseewald/vim-anyfold'
 
-call dein#add('mhinz/vim-startify')
+Plug 'wakatime/vim-wakatime'
 
-call dein#add('liuchengxu/vista.vim')
+Plug 'Vimjas/vim-python-pep8-indent'
 
-call dein#add('pseewald/vim-anyfold')
+Plug 'itchyny/vim-cursorword'
 
-" call dein#add('itchyny/vim-cursorword')
-" call dein#add('RRethy/vim-illuminate')
-
-call dein#add('wakatime/vim-wakatime')
-
-call dein#add('Vimjas/vim-python-pep8-indent')
-
-" Required:
-call dein#end()
+" Initialize plugin system
+call plug#end()
 
 let mapleader=" "
 
@@ -74,7 +59,6 @@ let g:completion_chain_complete_list = {
       \  ]}
 let g:completion_confirm_key = ""
 let g:completion_sorting = "none"
-let g:completion_tabnine_tabnine_path = "/home/jeff/.cache/dein/repos/github.com/aca/completion-tabnine/binaries/3.2.28/x86_64-unknown-linux-gnu/TabNine"
 let g:completion_tabnine_sort_by_details=1
 let g:completion_tabnine_priority = 1000
 
@@ -231,6 +215,11 @@ require('telescope').setup{
   defaults = {
     layout_strategy = "vertical",
     path_display = {"absolute", "shorten"}
+  },
+  pickers = {
+    find_files = {
+      path_display = {"absolute"}
+    }
   }
 }
 EOF

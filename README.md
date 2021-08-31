@@ -153,14 +153,14 @@ git clone git@github.com:sljeff/setupEnv.git
 https://github.com/neovim/neovim/releases/
 ```
 
-## [dein.vim](https://github.com/Shougo/dein.vim)
+## [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```bash
-curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-sh ./installer.sh ~/.cache/dein
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 ```
 ```bash
-pip3 install --user pynvim
+# pip3 install --user pynvim
 brew install ripgrep
 sudo apt-get install ripgrep
 ```
@@ -172,7 +172,7 @@ sudo apt-get install ripgrep
 open `nvim` and
 
 ```
-:call dein#update()
+:PlugInstall
 ```
 
 Some information about keys in this vimrc:
