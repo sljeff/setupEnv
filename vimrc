@@ -19,7 +19,7 @@ Plug 'kristijanhusak/completion-tags'
 
 Plug 'luochen1990/rainbow'
 
-Plug 'skywind3000/vim-terminal-help'
+Plug 'voldikss/vim-floaterm'
 
 Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
 
@@ -108,12 +108,15 @@ EOF
 
 let g:rainbow_active = 0
 
-let g:terminal_shell = "fish"
-let g:terminal_kill = "term"
-let g:terminal_list = 0
-let g:terminal_cwd = 2
-let g:terminal_edit = 'e'
-let g:terminal_height = 30
+let g:floaterm_width = 0.8
+let g:floaterm_height = 0.8
+nnoremap   <silent>   ccc     :FloatermNew<CR>
+tnoremap   <silent>   ccc     <C-\><C-n>:FloatermNew<CR>
+tnoremap   <silent>   ppp     <C-\><C-n>:FloatermPrev<CR>
+tnoremap   <silent>   nnn     <C-\><C-n>:FloatermNext<CR>
+nnoremap   <silent>   <m-=>   :FloatermToggle<CR>
+tnoremap   <silent>   <m-=>   <C-\><C-n>:FloatermToggle<CR>
+tnoremap   <silent>   <m-q>   <C-\><C-n>
 
 " Required:
 filetype plugin indent on
