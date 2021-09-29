@@ -98,7 +98,7 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 set -g prefix C-z
 set -g mode-keys vi
 # set -g default-shell /usr/bin/fish
-set -g @themepack-status-right-area-middle-format "%H:%M"
+# set -g @themepack-status-right-area-middle-format "%H:%M"
 
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -111,7 +111,13 @@ set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 
-set -g @plugin 'jimeh/tmux-themepack'
+# set -g @plugin 'jimeh/tmux-themepack'
+
+set -g @plugin 'dracula/tmux'
+set -g @dracula-plugins "battery network time"
+set -g @dracula-show-left-icon session
+set -g @dracula-show-timezone false
+set -g @dracula-day-month false
 
 run -b '~/.tmux/plugins/tpm/tpm'
 ```
