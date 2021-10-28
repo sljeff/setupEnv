@@ -9,13 +9,13 @@ Plug 'stephpy/vim-yaml'
 
 Plug 'junegunn/fzf'
 
-Plug 'jiangmiao/auto-pairs'
+Plug 'windwp/nvim-autopairs'
 
 Plug 'neovim/nvim-lspconfig'
 
-Plug 'nvim-lua/completion-nvim'
-Plug 'aca/completion-tabnine', { 'do': 'version=3.1.9 ./install.sh' }
-Plug 'kristijanhusak/completion-tags'
+Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 
 Plug 'luochen1990/rainbow'
 
@@ -26,8 +26,6 @@ Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
 Plug 'tpope/vim-fugitive'
 
 Plug 'nvim-lua/plenary.nvim' | Plug 'nvim-telescope/telescope.nvim'
-
-Plug 'kyazdani42/nvim-web-devicons' | Plug 'kyazdani42/nvim-tree.lua'
 
 Plug 'mhinz/vim-startify'
 
@@ -46,25 +44,16 @@ call plug#end()
 
 let mapleader=" "
 
-" completion
-autocmd BufEnter * lua require'completion'.on_attach()
-set completeopt=menuone,noinsert,noselect
-set shortmess+=c
-let g:completion_enable_auto_popup = 1
-let g:completion_enable_auto_hover = 1
-let g:completion_enable_auto_signature = 1
-let g:completion_chain_complete_list = {
-      \ 'default': [
-      \    {'complete_items': ['tabnine', 'lsp', 'tags']},
-      \  ]}
-let g:completion_confirm_key = ""
-let g:completion_sorting = "none"
-let g:completion_tabnine_sort_by_details=1
-let g:completion_tabnine_priority = 1000
-
-" lsp
+" lsp and coq
+let g:coq_settings = {
+ \"clients.tabnine.enabled": v:true,
+ \'auto_start': 'shut-up',
+ \'limits.completion_auto_timeout': 2,
+ \'clients.lsp.resolve_timeout': 2
+ \}
 lua << EOF
 local nvim_lsp = require('lspconfig')
+local coq = require "coq"
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -97,23 +86,68 @@ end
 -- map buffer local keybindings when the language server attaches
 local servers = { "pylsp", "clangd", "gopls" }
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    },
-  }
+  nvim_lsp[lsp].setup(
+    coq.lsp_ensure_capabilities({
+      on_attach = on_attach,
+      flags = {
+        debounce_text_changes = 150,
+      },
+    })
+  )
 end
+EOF
+
+" autopairs
+lua << EOF
+local remap = vim.api.nvim_set_keymap
+local npairs = require('nvim-autopairs')
+
+npairs.setup({ map_bs = false })
+
+vim.g.coq_settings = { keymap = { recommended = false } }
+
+-- these mappings are coq recommended mappings unrelated to nvim-autopairs
+remap('i', '<esc>', [[pumvisible() ? "<c-e><esc>" : "<esc>"]], { expr = true, noremap = true })
+remap('i', '<c-c>', [[pumvisible() ? "<c-e><c-c>" : "<c-c>"]], { expr = true, noremap = true })
+remap('i', '<tab>', [[pumvisible() ? "<c-n>" : "<tab>"]], { expr = true, noremap = true })
+remap('i', '<s-tab>', [[pumvisible() ? "<c-p>" : "<bs>"]], { expr = true, noremap = true })
+
+-- skip it, if you use another global object
+_G.MUtils= {}
+
+MUtils.CR = function()
+  if vim.fn.pumvisible() ~= 0 then
+    if vim.fn.complete_info({ 'selected' }).selected ~= -1 then
+      return npairs.esc('<c-y>')
+    else
+      return npairs.esc('<c-e>') .. npairs.autopairs_cr()
+    end
+  else
+    return npairs.autopairs_cr()
+  end
+end
+remap('i', '<cr>', 'v:lua.MUtils.CR()', { expr = true, noremap = true })
+
+MUtils.BS = function()
+  if vim.fn.pumvisible() ~= 0 and vim.fn.complete_info({ 'mode' }).mode == 'eval' then
+    return npairs.esc('<c-e>') .. npairs.autopairs_bs()
+  else
+    return npairs.autopairs_bs()
+  end
+end
+remap('i', '<bs>', 'v:lua.MUtils.BS()', { expr = true, noremap = true })
 EOF
 
 let g:rainbow_active = 0
 
 let g:floaterm_width = 0.8
 let g:floaterm_height = 0.8
+nnoremap   <silent>   <C-n>   :FloatermNew xplr<CR>
 nnoremap   <silent>   ccc     :FloatermNew<CR>
 tnoremap   <silent>   ccc     <C-\><C-n>:FloatermNew<CR>
 tnoremap   <silent>   ppp     <C-\><C-n>:FloatermPrev<CR>
 tnoremap   <silent>   nnn     <C-\><C-n>:FloatermNext<CR>
+inoremap   <silent>   <m-=>   <C-\><C-n>:FloatermToggle<CR>
 nnoremap   <silent>   <m-=>   :FloatermToggle<CR>
 tnoremap   <silent>   <m-=>   <C-\><C-n>:FloatermToggle<CR>
 tnoremap   <silent>   <m-q>   <C-\><C-n>
@@ -123,7 +157,7 @@ filetype plugin indent on
 syntax enable
 
 " anyfold
-autocmd Filetype * AnyFoldActivate               " activate for all filetypes
+autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate
 set foldlevel=99 " Open all folds
 
 " vista
@@ -226,15 +260,6 @@ require('telescope').setup{
   }
 }
 EOF
-
-" tree
-nnoremap <C-n> :NvimTreeToggle<CR>
-set termguicolors
-let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ]
-let g:nvim_tree_hide_dotfiles = 1
-let g:nvim_tree_git_hl = 1
-let g:nvim_tree_highlight_opened_files = 1
-let g:nvim_tree_lsp_diagnostics = 1
 
 set nu
 set rnu
