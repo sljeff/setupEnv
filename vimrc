@@ -21,7 +21,9 @@ Plug 'luochen1990/rainbow'
 
 Plug 'voldikss/vim-floaterm'
 
-Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'akinsho/bufferline.nvim'
 
 Plug 'tpope/vim-fugitive'
 
@@ -142,7 +144,8 @@ let g:rainbow_active = 0
 
 let g:floaterm_width = 0.8
 let g:floaterm_height = 0.8
-nnoremap   <silent>   <C-n>   :FloatermNew xplr<CR>
+let g:floaterm_opener = 'split'
+nnoremap   <silent>   <C-n>   :FloatermNew --opener=edit xplr<CR>
 nnoremap   <silent>   ccc     :FloatermNew<CR>
 tnoremap   <silent>   ccc     <C-\><C-n>:FloatermNew<CR>
 tnoremap   <silent>   ppp     <C-\><C-n>:FloatermPrev<CR>
@@ -171,68 +174,50 @@ let g:vista_sidebar_position = "rightbelow"
 nnoremap = :Vista finder<cr>
 nnoremap <Leader>= :Vista!!<cr>
 
-set noshowmode
-set showtabline=2
-autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
-let g:lightline#bufferline#filename_modifier = ':t'
-let g:lightline#bufferline#shorten_path = 1
-let g:lightline#bufferline#show_number  = 2
-let g:lightline#bufferline#unnamed      = '[No Name]'
-let g:lightline#bufferline#unicode_symbols = 1
-let g:lightline = {
-    \ 'colorscheme': 'PaperColor',
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
-    \ },
-    \ 'component': {
-    \   'lineinfo': ' %3l:%-2v',
-    \ },
-    \ 'component_function': {
-    \   'filename': 'LightlineFilename',
-    \   'readonly': 'LightlineReadonly',
-    \   'fugitive': 'LightlineFugitive'
-    \ },
-    \ 'separator': { 'left': '', 'right': '' },
-    \ 'subseparator': { 'left': '', 'right': '' }
-    \ }
-let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
-let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
-let g:lightline.component_type   = {'buffers': 'tabsel'}
-function! LightlineFilename()
-  let root = fnamemodify(get(b:, 'gitbranch_path'), ':h:h')
-  let path = expand('%:p')
-  if path[:len(root)-1] ==# root
-    return path[len(root)+1:]
-  endif
-  return expand('%')
-endfunction
-function! LightlineReadonly()
-	return &readonly ? '' : ''
-endfunction
-function! LightlineFugitive()
-	if exists('*FugitiveHead')
-		let branch = FugitiveHead()
-		return branch !=# '' ? ''.branch : ''
-	endif
-	return ''
-endfunction
-
-" buffer line
+" lualine and bufferline
+set termguicolors
+lua << END
+require'lualine'.setup()
+require("bufferline").setup{
+  highlights = {
+    fill = { guibg = '#005f87' },
+    buffer_selected = { gui = 'bold' },
+    diagnostic_selected = { gui = 'bold' },
+    info_selected = { gui = 'bold' },
+    info_diagnostic_selected = { gui = 'bold' },
+    warning_selected = { gui = 'bold' },
+    warning_diagnostic_selected = { gui = 'bold' },
+    error_selected = { gui = 'bold' },
+    error_diagnostic_selected = { gui = 'bold' },
+  },
+  options = {
+    numbers = "ordinal",
+    diagnostics = "nvim_lsp",
+    groups = {}, -- see :h bufferline-groups for details
+    show_tab_indicators = true,
+    show_close_icon = false,
+    separator_style = 'thin',
+    enforce_regular_tabs = false,
+  }
+}
+END
 nnoremap <Leader>m :noh<CR>
-nnoremap <Leader>n :bn<cr>
-nnoremap <Leader>p :bp<cr>
-nnoremap <Leader>d :bd<cr>
-nmap <Leader>1 <Plug>lightline#bufferline#go(1)
-nmap <Leader>2 <Plug>lightline#bufferline#go(2)
-nmap <Leader>3 <Plug>lightline#bufferline#go(3)
-nmap <Leader>4 <Plug>lightline#bufferline#go(4)
-nmap <Leader>5 <Plug>lightline#bufferline#go(5)
-nmap <Leader>6 <Plug>lightline#bufferline#go(6)
-nmap <Leader>7 <Plug>lightline#bufferline#go(7)
-nmap <Leader>8 <Plug>lightline#bufferline#go(8)
-nmap <Leader>9 <Plug>lightline#bufferline#go(9)
-nmap <Leader>0 <Plug>lightline#bufferline#go(10)
+nnoremap <silent><A-n> :BufferLineCycleNext<CR>
+nnoremap <silent><A-p> :BufferLineCyclePrev<CR>
+nnoremap <silent><A-N> :BufferLineMoveNext<CR>
+nnoremap <silent><A-P> :BufferLineMovePrev<CR>
+nnoremap <silent><A-c> :BufferLinePickClose<CR>
+nnoremap <silent><C-s> :BufferLinePick<CR>
+nnoremap <silent><Leader>bd :BufferLineSortByDirectory<CR>
+nnoremap <silent><Leader>1 <Cmd>BufferLineGoToBuffer 1<CR>
+nnoremap <silent><Leader>2 <Cmd>BufferLineGoToBuffer 2<CR>
+nnoremap <silent><Leader>3 <Cmd>BufferLineGoToBuffer 3<CR>
+nnoremap <silent><Leader>4 <Cmd>BufferLineGoToBuffer 4<CR>
+nnoremap <silent><Leader>5 <Cmd>BufferLineGoToBuffer 5<CR>
+nnoremap <silent><Leader>6 <Cmd>BufferLineGoToBuffer 6<CR>
+nnoremap <silent><Leader>7 <Cmd>BufferLineGoToBuffer 7<CR>
+nnoremap <silent><Leader>8 <Cmd>BufferLineGoToBuffer 8<CR>
+nnoremap <silent><Leader>9 <Cmd>BufferLineGoToBuffer 9<CR>
 
 " telescope
 nnoremap <Leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
