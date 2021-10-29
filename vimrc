@@ -192,7 +192,7 @@ nnoremap <Leader>= :Vista!!<cr>
 " lualine and bufferline
 set termguicolors
 lua << END
-require'lualine'.setup()
+require'lualine'.setup{}
 require("bufferline").setup{
   highlights = {
     fill = { guibg = '#005f87' },
@@ -211,19 +211,18 @@ require("bufferline").setup{
     groups = {}, -- see :h bufferline-groups for details
     show_tab_indicators = true,
     show_close_icon = false,
+    show_buffer_close_icons = false,
     separator_style = 'thin',
     enforce_regular_tabs = false,
+    sort_by = 'id',
   }
 }
 END
 nnoremap <Leader>m :noh<CR>
-nnoremap <silent><A-n> :BufferLineCycleNext<CR>
-nnoremap <silent><A-p> :BufferLineCyclePrev<CR>
-nnoremap <silent><A-N> :BufferLineMoveNext<CR>
-nnoremap <silent><A-P> :BufferLineMovePrev<CR>
+nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>p :bp<CR>
+nnoremap <Leader>d :bd<CR>
 nnoremap <silent><A-c> :BufferLinePickClose<CR>
-nnoremap <silent><C-s> :BufferLinePick<CR>
-nnoremap <silent><Leader>bd :BufferLineSortByDirectory<CR>
 nnoremap <silent><Leader>1 <Cmd>BufferLineGoToBuffer 1<CR>
 nnoremap <silent><Leader>2 <Cmd>BufferLineGoToBuffer 2<CR>
 nnoremap <silent><Leader>3 <Cmd>BufferLineGoToBuffer 3<CR>
