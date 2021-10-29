@@ -13,9 +13,16 @@ Plug 'windwp/nvim-autopairs'
 
 Plug 'neovim/nvim-lspconfig'
 
-Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
-Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'rafamadriz/friendly-snippets'
+Plug 'onsails/lspkind-nvim'
+Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 
 Plug 'luochen1990/rainbow'
 
@@ -46,16 +53,22 @@ call plug#end()
 
 let mapleader=" "
 
-" lsp and coq
-let g:coq_settings = {
- \"clients.tabnine.enabled": v:true,
- \'auto_start': 'shut-up',
- \'limits.completion_auto_timeout': 2,
- \'clients.lsp.resolve_timeout': 2
- \}
+" lsp and cmp and autopairs
+set completeopt=menu,menuone,noselect
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local coq = require "coq"
+local lspkind = require('lspkind')
+local cmp = require'cmp'
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+require('nvim-autopairs').setup{}
+local tabnine = require('cmp_tabnine.config')
+tabnine:setup({
+        max_lines = 1000;
+        max_num_results = 20;
+        sort = true;
+	run_on_every_keystroke = true;
+	snippet_placeholder = '..';
+})
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -86,58 +99,60 @@ local on_attach = function(client, bufnr)
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
+cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+    ['<C-y>'] = cmp.config.disable,
+    ['<C-e>'] = cmp.mapping({
+      i = cmp.mapping.abort(),
+      c = cmp.mapping.close(),
+    }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'cmp_tabnine' },
+    { name = 'buffer' },
+    { name = 'vsnip' },
+  }),
+  formatting = {
+    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  }
+})
+-- Use buffer source for `/`.
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+-- Use cmdline & path source for ':'.
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 local servers = { "pylsp", "clangd", "gopls" }
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup(
-    coq.lsp_ensure_capabilities({
-      on_attach = on_attach,
-      flags = {
-        debounce_text_changes = 150,
-      },
-    })
-  )
+  nvim_lsp[lsp].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+    flags = {
+      debounce_text_changes = 150,
+    },
+  })
 end
-EOF
-
-" autopairs
-lua << EOF
-local remap = vim.api.nvim_set_keymap
-local npairs = require('nvim-autopairs')
-
-npairs.setup({ map_bs = false })
-
-vim.g.coq_settings = { keymap = { recommended = false } }
-
--- these mappings are coq recommended mappings unrelated to nvim-autopairs
-remap('i', '<esc>', [[pumvisible() ? "<c-e><esc>" : "<esc>"]], { expr = true, noremap = true })
-remap('i', '<c-c>', [[pumvisible() ? "<c-e><c-c>" : "<c-c>"]], { expr = true, noremap = true })
-remap('i', '<tab>', [[pumvisible() ? "<c-n>" : "<tab>"]], { expr = true, noremap = true })
-remap('i', '<s-tab>', [[pumvisible() ? "<c-p>" : "<bs>"]], { expr = true, noremap = true })
-
--- skip it, if you use another global object
-_G.MUtils= {}
-
-MUtils.CR = function()
-  if vim.fn.pumvisible() ~= 0 then
-    if vim.fn.complete_info({ 'selected' }).selected ~= -1 then
-      return npairs.esc('<c-y>')
-    else
-      return npairs.esc('<c-e>') .. npairs.autopairs_cr()
-    end
-  else
-    return npairs.autopairs_cr()
-  end
-end
-remap('i', '<cr>', 'v:lua.MUtils.CR()', { expr = true, noremap = true })
-
-MUtils.BS = function()
-  if vim.fn.pumvisible() ~= 0 and vim.fn.complete_info({ 'mode' }).mode == 'eval' then
-    return npairs.esc('<c-e>') .. npairs.autopairs_bs()
-  else
-    return npairs.autopairs_bs()
-  end
-end
-remap('i', '<bs>', 'v:lua.MUtils.BS()', { expr = true, noremap = true })
 EOF
 
 let g:rainbow_active = 0
