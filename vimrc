@@ -272,7 +272,7 @@ vim.api.nvim_set_keymap("n", "<Leader>gb", "<cmd>lua require('telescope.builtin'
 require('telescope').setup{
   defaults = {
     layout_strategy = vim.g.is_horizontal and "horizontal" or "vertical",
-    path_display = {"absolute", "shorten"}
+    path_display = {"smart"}
   },
   pickers = {
     find_files = {
