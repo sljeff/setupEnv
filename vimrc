@@ -51,11 +51,17 @@ Plug 'itchyny/vim-cursorword'
 " Initialize plugin system
 call plug#end()
 
-let mapleader=" "
-
-" lsp and cmp and autopairs
-set completeopt=menu,menuone,noselect
 lua << EOF
+local lines = vim.opt.lines._value
+local columns = vim.opt.columns._value
+vim.g.is_horizontal = true
+if (lines * 2 > columns) then
+	vim.g.is_horizontal = false
+end
+vim.g.mapleader = " "
+vim.opt.completeopt = "menu,menuone,noselect"
+
+-- lsp and cmp and autopairs
 local nvim_lsp = require('lspconfig')
 local lspkind = require('lspkind')
 local cmp = require'cmp'
@@ -96,6 +102,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  vim.call("vista#RunForNearestMethodOrFunction")
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -153,46 +160,62 @@ for _, lsp in ipairs(servers) do
     },
   })
 end
-EOF
 
-let g:rainbow_active = 0
+vim.g.rainbow_active = 0
+vim.g.floaterm_width = 0.8
+vim.g.floaterm_height = 0.8
+if (vim.g.is_horizontal) then
+	vim.g.floaterm_opener = 'vsplit'
+	vim.api.nvim_set_keymap("n", "<C-A-n>", ":FloatermNew --opener=vsplit xplr<CR>", { silent = true, noremap = true, })
+else
+	vim.g.floaterm_opener = 'split'
+	vim.api.nvim_set_keymap("n", "<C-A-n>", ":FloatermNew --opener=split xplr<CR>", { silent = true, noremap = true, })
+end
+vim.api.nvim_set_keymap("n", "<C-n>", ":FloatermNew --opener=edit xplr<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "ccc", ":FloatermNew<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "ccc", "<C-\\><C-n>:FloatermNew<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "ppp", "<C-\\><C-n>:FloatermPrev<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "nnn", "<C-\\><C-n>:FloatermNext<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("i", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<m-=>", ":FloatermToggle<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "<m-q>", "<C-\\><C-n>", { silent = true, noremap = true, })
 
-let g:floaterm_width = 0.8
-let g:floaterm_height = 0.8
-let g:floaterm_opener = 'split'
-nnoremap   <silent>   <C-n>   :FloatermNew --opener=edit xplr<CR>
-nnoremap   <silent>   ccc     :FloatermNew<CR>
-tnoremap   <silent>   ccc     <C-\><C-n>:FloatermNew<CR>
-tnoremap   <silent>   ppp     <C-\><C-n>:FloatermPrev<CR>
-tnoremap   <silent>   nnn     <C-\><C-n>:FloatermNext<CR>
-inoremap   <silent>   <m-=>   <C-\><C-n>:FloatermToggle<CR>
-nnoremap   <silent>   <m-=>   :FloatermToggle<CR>
-tnoremap   <silent>   <m-=>   <C-\><C-n>:FloatermToggle<CR>
-tnoremap   <silent>   <m-q>   <C-\><C-n>
-
-" Required:
+vim.api.nvim_command([[
 filetype plugin indent on
 syntax enable
+colorscheme PaperColor
+autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
+vim.opt.foldlevel = 99  -- Open all folds
 
-" anyfold
-autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate
-set foldlevel=99 " Open all folds
+-- vista
+vim.g.vista_default_executive = "ctags"
+vim.g.vista_executive_for = {
+	go = 'nvim_lsp',
+	python = 'nvim_lsp',
+	}
+vim.g['vista#renderer#enable_icon'] = 1
+vim.g.vista_disable_statusline = true
+if (vim.g.is_horizontal) then
+	vim.g.vista_sidebar_open_cmd = tostring(math.ceil(columns*0.2)) .. 'vsplit'
+else
+	vim.g.vista_sidebar_open_cmd = tostring(math.ceil(lines*0.3)) .. 'split'
+end
+vim.api.nvim_set_keymap("n", "=", ":Vista finder<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>=", ":Vista!!<cr>", { noremap = true, })
 
-" vista
-let g:vista_default_executive = 'ctags'
-let g:vista_executive_for = {
-  \ 'go': 'nvim_lsp',
-  \ 'python': 'nvim_lsp',
-  \ }
-let g:vista#renderer#enable_icon = 1
-let g:vista_sidebar_position = "rightbelow"
-nnoremap = :Vista finder<cr>
-nnoremap <Leader>= :Vista!!<cr>
-
-" lualine and bufferline
-set termguicolors
-lua << END
-require'lualine'.setup{}
+-- lualine and bufferline
+vim.opt.termguicolors = true
+require'lualine'.setup{
+	sections = {
+		lualine_a = {'mode', 'b:vista_nearest_method_or_function'},
+		lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_lsp'}}},
+		lualine_c = {{'filename', file_status = true, path = 1, shorting_target = 40}},
+		lualine_x = {'encoding', 'fileformat', 'filetype'},
+		lualine_y = {'progress'},
+		lualine_z = {'location'}
+		},
+	}
 require("bufferline").setup{
   highlights = {
     fill = { guibg = '#005f87' },
@@ -217,39 +240,38 @@ require("bufferline").setup{
     sort_by = 'id',
   }
 }
-END
-nnoremap <Leader>m :noh<CR>
-nnoremap <Leader>n :bn<CR>
-nnoremap <Leader>p :bp<CR>
-nnoremap <Leader>d :bd<CR>
-nnoremap <silent><A-c> :BufferLinePickClose<CR>
-nnoremap <silent><Leader>1 <Cmd>BufferLineGoToBuffer 1<CR>
-nnoremap <silent><Leader>2 <Cmd>BufferLineGoToBuffer 2<CR>
-nnoremap <silent><Leader>3 <Cmd>BufferLineGoToBuffer 3<CR>
-nnoremap <silent><Leader>4 <Cmd>BufferLineGoToBuffer 4<CR>
-nnoremap <silent><Leader>5 <Cmd>BufferLineGoToBuffer 5<CR>
-nnoremap <silent><Leader>6 <Cmd>BufferLineGoToBuffer 6<CR>
-nnoremap <silent><Leader>7 <Cmd>BufferLineGoToBuffer 7<CR>
-nnoremap <silent><Leader>8 <Cmd>BufferLineGoToBuffer 8<CR>
-nnoremap <silent><Leader>9 <Cmd>BufferLineGoToBuffer 9<CR>
+vim.api.nvim_set_keymap("n", "<Leader>m", ":noh<CR>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>n", ":bn<CR>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>p", ":bp<CR>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>d", ":bd<CR>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<A-c>", ":BufferLinePickClose<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>1", "<Cmd>BufferLineGoToBuffer 1<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>2", "<Cmd>BufferLineGoToBuffer 2<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>3", "<Cmd>BufferLineGoToBuffer 3<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>4", "<Cmd>BufferLineGoToBuffer 4<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>5", "<Cmd>BufferLineGoToBuffer 5<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>6", "<Cmd>BufferLineGoToBuffer 6<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>7", "<Cmd>BufferLineGoToBuffer 7<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>8", "<Cmd>BufferLineGoToBuffer 8<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>9", "<Cmd>BufferLineGoToBuffer 9<CR>", { silent = true, noremap = true, })
 
-" telescope
-nnoremap <Leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap <Leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <Leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <Leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
-nnoremap <Leader>ca <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
-nnoremap <C-m>d     <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<cr>
-nnoremap <C-m>a     <cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<cr>
-nnoremap gr         <cmd>lua require('telescope.builtin').lsp_references()<cr>
-nnoremap gd         <cmd>lua require('telescope.builtin').lsp_definitions()<cr>
-nnoremap gi         <cmd>lua require('telescope.builtin').lsp_implementations()<cr>
-nnoremap <Leader>gs <cmd>lua require('telescope.builtin').git_status()<cr>
-nnoremap <Leader>gb <cmd>lua require('telescope.builtin').git_branches()<cr>
-lua << EOF
+-- telescope
+vim.api.nvim_set_keymap("n", "<Leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>ca", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<C-m>d", "<cmd>lua require('telescope.builtin').lsp_document_diagnostics()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<C-m>a", "<cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "gr", "<cmd>lua require('telescope.builtin').lsp_references()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "gd", "<cmd>lua require('telescope.builtin').lsp_definitions()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "gi", "<cmd>lua require('telescope.builtin').lsp_implementations()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>gs", "<cmd>lua require('telescope.builtin').git_status()<cr>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>gb", "<cmd>lua require('telescope.builtin').git_branches()<cr>", { noremap = true, })
+
 require('telescope').setup{
   defaults = {
-    layout_strategy = "vertical",
+    layout_strategy = vim.g.is_horizontal and "horizontal" or "vertical",
     path_display = {"absolute", "shorten"}
   },
   pickers = {
@@ -258,19 +280,14 @@ require('telescope').setup{
     }
   }
 }
+
+vim.opt.nu = true
+vim.opt.rnu = true
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
+vim.opt.backspace = 'indent,eol,start'
+-- Required for operations modifying multiple buffers like rename.
+vim.opt.hidden = true
+vim.opt.encoding = 'utf-8'
+vim.opt.background = 'light'
 EOF
-
-set nu
-set rnu
-set hlsearch
-set incsearch
-" set nowrap
-
-set backspace=indent,eol,start
-
-" Required for operations modifying multiple buffers like rename.
-set hidden
-set encoding=utf-8
-
-colorscheme PaperColor
-set background=light
