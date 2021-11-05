@@ -192,6 +192,7 @@ Some information about keys in this vimrc:
 # 3.1 [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 
 - [Download](https://github.com/ryanoasis/nerd-fonts#patched-fonts) one font you like.
+- (BlexMono)
 - Install on your OS
 - use the font in terminal
 
