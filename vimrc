@@ -48,6 +48,10 @@ Plug 'Vimjas/vim-python-pep8-indent'
 
 Plug 'itchyny/vim-cursorword'
 
+Plug 'chaoren/vim-wordmotion'
+Plug 'psliwka/vim-smoothie'
+Plug 'romainl/vim-cool'
+
 " Initialize plugin system
 call plug#end()
 
