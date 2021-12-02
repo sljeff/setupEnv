@@ -22,7 +22,7 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'onsails/lspkind-nvim'
-Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+" Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 
 Plug 'luochen1990/rainbow'
 
@@ -48,9 +48,7 @@ Plug 'Vimjas/vim-python-pep8-indent'
 
 Plug 'itchyny/vim-cursorword'
 
-Plug 'chaoren/vim-wordmotion'
 Plug 'psliwka/vim-smoothie'
-Plug 'romainl/vim-cool'
 
 " Initialize plugin system
 call plug#end()
@@ -71,14 +69,18 @@ local lspkind = require('lspkind')
 local cmp = require'cmp'
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 require('nvim-autopairs').setup{}
-local tabnine = require('cmp_tabnine.config')
-tabnine:setup({
-        max_lines = 1000;
-        max_num_results = 20;
-        sort = true;
-	run_on_every_keystroke = true;
-	snippet_placeholder = '..';
-})
+-- local tabnine = require('cmp_tabnine.config')
+-- tabnine:setup({
+-- 	max_lines = 1000;
+-- 	max_num_results = 20;
+-- 	sort = true;
+-- 	run_on_every_keystroke = true;
+-- 	snippet_placeholder = '..';
+-- 	ignored_file_types = { -- default is not to ignore
+-- 		-- uncomment to ignore in lua:
+-- 		-- lua = true
+-- 	};
+-- })
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -130,7 +132,7 @@ cmp.setup({
   },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    { name = 'cmp_tabnine' },
+    -- { name = 'cmp_tabnine' },
     { name = 'buffer' },
     { name = 'vsnip' },
   }),
@@ -193,11 +195,7 @@ autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 vim.opt.foldlevel = 99  -- Open all folds
 
 -- vista
-vim.g.vista_default_executive = "ctags"
-vim.g.vista_executive_for = {
-	go = 'nvim_lsp',
-	python = 'nvim_lsp',
-	}
+vim.g.vista_default_executive = "nvim_lsp"
 vim.g['vista#renderer#enable_icon'] = 1
 vim.g.vista_disable_statusline = true
 if (vim.g.is_horizontal) then
