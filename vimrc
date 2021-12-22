@@ -211,7 +211,7 @@ vim.opt.termguicolors = true
 require'lualine'.setup{
 	sections = {
 		lualine_a = {'mode', 'b:vista_nearest_method_or_function'},
-		lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_lsp'}}},
+		lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_diagnostic'}}},
 		lualine_c = {{'filename', file_status = true, path = 1, shorting_target = 40}},
 		lualine_x = {'encoding', 'fileformat', 'filetype'},
 		lualine_y = {'progress'},
