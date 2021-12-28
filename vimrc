@@ -38,7 +38,8 @@ Plug 'nvim-lua/plenary.nvim' | Plug 'nvim-telescope/telescope.nvim'
 
 Plug 'mhinz/vim-startify'
 
-Plug 'liuchengxu/vista.vim'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'SmiteshP/nvim-gps'
 
 Plug 'pseewald/vim-anyfold'
 
@@ -49,6 +50,8 @@ Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'itchyny/vim-cursorword'
 
 Plug 'psliwka/vim-smoothie'
+
+Plug 'puremourning/vimspector'
 
 " Initialize plugin system
 call plug#end()
@@ -108,7 +111,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  vim.call("vista#RunForNearestMethodOrFunction")
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -194,23 +196,15 @@ colorscheme PaperColor
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 vim.opt.foldlevel = 99  -- Open all folds
 
--- vista
-vim.g.vista_default_executive = "nvim_lsp"
-vim.g['vista#renderer#enable_icon'] = 1
-vim.g.vista_disable_statusline = true
-if (vim.g.is_horizontal) then
-	vim.g.vista_sidebar_open_cmd = tostring(math.ceil(columns*0.2)) .. 'vsplit'
-else
-	vim.g.vista_sidebar_open_cmd = tostring(math.ceil(lines*0.3)) .. 'split'
-end
-vim.api.nvim_set_keymap("n", "=", ":Vista finder<cr>", { noremap = true, })
-vim.api.nvim_set_keymap("n", "<Leader>=", ":Vista!!<cr>", { noremap = true, })
+-- gps
+local gps = require("nvim-gps")
+gps.setup()
 
 -- lualine and bufferline
 vim.opt.termguicolors = true
 require'lualine'.setup{
 	sections = {
-		lualine_a = {'mode', 'b:vista_nearest_method_or_function'},
+		lualine_a = {'mode', { gps.get_location, cond = gps.is_available }},
 		lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_diagnostic'}}},
 		lualine_c = {{'filename', file_status = true, path = 1, shorting_target = 40}},
 		lualine_x = {'encoding', 'fileformat', 'filetype'},
@@ -292,4 +286,6 @@ vim.opt.backspace = 'indent,eol,start'
 vim.opt.hidden = true
 vim.opt.encoding = 'utf-8'
 vim.opt.background = 'light'
+vim.opt.showmode = false
+vim.g.vimspector_enable_mappings = 'HUMAN'
 EOF
