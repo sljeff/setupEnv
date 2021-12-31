@@ -53,6 +53,8 @@ Plug 'psliwka/vim-smoothie'
 
 Plug 'puremourning/vimspector'
 
+Plug 'lukas-reineke/indent-blankline.nvim'
+
 " Initialize plugin system
 call plug#end()
 
@@ -134,7 +136,6 @@ cmp.setup({
   },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    -- { name = 'cmp_tabnine' },
     { name = 'buffer' },
     { name = 'vsnip' },
   }),
