@@ -59,7 +59,8 @@ style = "bg:white bold fg:black"
 
 # Replace the "❯" symbol in the prompt with "➜"
 [character]      # The name of the module we are configuring is "character"
-symbol = "➜"     # The "symbol" segment is being set to "➜"
+success_symbol = "[➜](bold green) "
+error_symbol = "[✗](bold red) "
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -77,6 +78,8 @@ style = "bold blue"
 
 [python]
 style = "bold blue"
+pyenv_version_name = true
+pyenv_prefix = ""
 
 [cmd_duration]
 style = "bold blue"
@@ -207,9 +210,9 @@ curl https://pyenv.run | bash
 ```
 # ~/.config/fish/config.fish
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-pyenv init - | source
+set -g PYENV_ROOT $HOME/.pyenv
+fish_add_path $PYENV_ROOT/bin
+pyenv init --path --no-rehash | source
 ```
 
 ```bash
@@ -235,8 +238,8 @@ tar -C /usr/local -xzf go?.?-?.tar.gz
 mkdir ~/go
 
 # ~/.config/fish/config.fish
-export PATH="/usr/local/go/bin:$PATH"
-export PATH="/$HOME/go/bin:$PATH"
+fish_add_path /usr/local/go/bin
+fish_add_path $HOME/go/bin
 export GOPATH="$HOME/go"
 export GO111MODULE="on"
 export GOPROXY="https://goproxy.cn/"
