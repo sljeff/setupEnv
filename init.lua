@@ -1,5 +1,7 @@
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function()
+  use 'wbthomason/packer.nvim'
+
   use 'flazz/vim-colorschemes'
 
   use 'stephpy/vim-yaml'
@@ -54,6 +56,8 @@ require('packer').startup(function()
   use 'lukas-reineke/indent-blankline.nvim'
 
   use 'dstein64/vim-startuptime'
+
+  use 'khaveesh/vim-fish-syntax'
 end)
 
 local lines = vim.opt.lines._value
