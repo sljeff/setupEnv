@@ -1,64 +1,61 @@
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
-call plug#begin(stdpath('data') . '/plugged')
+vim.cmd [[packadd packer.nvim]]
+require('packer').startup(function()
+  use 'flazz/vim-colorschemes'
 
-Plug 'flazz/vim-colorschemes'
+  use 'stephpy/vim-yaml'
 
-Plug 'stephpy/vim-yaml'
+  use 'junegunn/fzf'
 
-Plug 'junegunn/fzf'
+  use 'windwp/nvim-autopairs'
 
-Plug 'windwp/nvim-autopairs'
+  use 'neovim/nvim-lspconfig'
+  use 'ray-x/lsp_signature.nvim'
 
-Plug 'neovim/nvim-lspconfig'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+  use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-vsnip'
+  use 'hrsh7th/vim-vsnip'
+  use 'rafamadriz/friendly-snippets'
+  use 'onsails/lspkind-nvim'
 
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'rafamadriz/friendly-snippets'
-Plug 'onsails/lspkind-nvim'
-" Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+  use 'luochen1990/rainbow'
 
-Plug 'luochen1990/rainbow'
+  use 'voldikss/vim-floaterm'
 
-Plug 'voldikss/vim-floaterm'
+  use 'kyazdani42/nvim-web-devicons'
+  use 'nvim-lualine/lualine.nvim'
+  use 'akinsho/bufferline.nvim'
 
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'akinsho/bufferline.nvim'
+  use 'tpope/vim-fugitive'
 
-Plug 'tpope/vim-fugitive'
+  use 'nvim-lua/plenary.nvim'
+  use 'nvim-telescope/telescope.nvim'
 
-Plug 'nvim-lua/plenary.nvim' | Plug 'nvim-telescope/telescope.nvim'
+  use 'goolord/alpha-nvim'
 
-Plug 'mhinz/vim-startify'
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'SmiteshP/nvim-gps'
 
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'SmiteshP/nvim-gps'
+  use 'pseewald/vim-anyfold'
 
-Plug 'pseewald/vim-anyfold'
+  use 'wakatime/vim-wakatime'
 
-Plug 'wakatime/vim-wakatime'
+  use 'Vimjas/vim-python-pep8-indent'
 
-Plug 'Vimjas/vim-python-pep8-indent'
+  use 'itchyny/vim-cursorword'
 
-Plug 'itchyny/vim-cursorword'
+  use 'psliwka/vim-smoothie'
 
-Plug 'psliwka/vim-smoothie'
+  use 'puremourning/vimspector'
 
-Plug 'puremourning/vimspector'
+  use 'lukas-reineke/indent-blankline.nvim'
 
-Plug 'lukas-reineke/indent-blankline.nvim'
+  use 'dstein64/vim-startuptime'
+end)
 
-" Initialize plugin system
-call plug#end()
-
-lua << EOF
 local lines = vim.opt.lines._value
 local columns = vim.opt.columns._value
 vim.g.is_horizontal = true
@@ -169,6 +166,7 @@ for _, lsp in ipairs(servers) do
     },
   })
 end
+require "lsp_signature".setup({})
 
 vim.g.rainbow_active = 0
 vim.g.floaterm_width = 0.8
@@ -190,11 +188,12 @@ vim.api.nvim_set_keymap("n", "<m-=>", ":FloatermToggle<CR>", { silent = true, no
 vim.api.nvim_set_keymap("t", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("t", "<m-q>", "<C-\\><C-n>", { silent = true, noremap = true, })
 
-vim.api.nvim_command([[
+vim.cmd([[
 filetype plugin indent on
 syntax enable
 colorscheme PaperColor
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
+
 vim.opt.foldlevel = 99  -- Open all folds
 
 -- gps
@@ -289,4 +288,4 @@ vim.opt.encoding = 'utf-8'
 vim.opt.background = 'light'
 vim.opt.showmode = false
 vim.g.vimspector_enable_mappings = 'HUMAN'
-EOF
+require('alpha').setup(require'alpha.themes.dashboard'.opts)

@@ -159,26 +159,27 @@ git clone git@github.com:sljeff/setupEnv.git
 https://github.com/neovim/neovim/releases/
 ```
 
-## [vim-plug](https://github.com/junegunn/vim-plug)
+## [packer.nvim](https://github.com/wbthomason/packer.nvim#quickstart)
 
 ```bash
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 ```
 ```bash
 # pip3 install --user pynvim
-brew install ripgrep
+brew install ripgrep xplr
 sudo apt-get install ripgrep
+# xplr release https://github.com/sayanarijit/xplr/releases
 ```
 
-## VIMRC
+## init.lua
 
-**COPY [.vimrc](./vimrc)** to your ~/.config/nvim/init.vim
+**COPY [init.lua](./init.lua)** to your ~/.config/nvim/init.lua
 
 open `nvim` and
 
 ```
-:PlugInstall
+:PackerInstall
 ```
 
 Some information about keys in this vimrc:
@@ -187,7 +188,6 @@ Some information about keys in this vimrc:
 - search `nnoremap` and check key mapping (exclude thus in `s:denite_my_settings` and `s:defx_my_settings`)
 - `nnoremap` in `s:denite_my_settings` are for denite window
 - `nnoremap` in `s:defx_my_settings` are for defx window (file explorer)
-- keys for terminal: check [skywind3000/vim-terminal-help](https://github.com/skywind3000/vim-terminal-help)
 
 # 3.1 [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 
@@ -242,26 +242,15 @@ export GO111MODULE="on"
 export GOPROXY="https://goproxy.cn/"
 export GOPRIVATE="my.git.host"
 
-go get golang.org/x/tools/gopls@latest
-go get github.com/go-delve/delve/cmd/dlv
-nvim a.go # check gopls, enable tabnine sem
+go install golang.org/x/tools/gopls@latest
+go install github.com/go-delve/delve/cmd/dlv@latest
+nvim a.go # check gopls
 ```
 
 ## [golangci-lint](https://github.com/golangci/golangci-lint#binary)
 
 ```
-brew install golangci/tap/golangci-lint
-
-# linux
-bash
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
-```
-
-## go-swagger [Binary](https://github.com/go-swagger/go-swagger/releases)
-
-```
-chmod +x swagger_?_?
-sudo mv swagger_?_? /usr/local/bin/swagger
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 ```
 
 # 6. docker
@@ -356,5 +345,5 @@ brew install derailed/k9s/k9s
 ## [ksd](https://github.com/mfuentesg/ksd)
 
 ```
-go get github.com/mfuentesg/ksd
+go install github.com/mfuentesg/ksd@latest
 ```
