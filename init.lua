@@ -58,6 +58,10 @@ require('packer').startup(function()
   use 'khaveesh/vim-fish-syntax'
 
   use 'ray-x/go.nvim'
+
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+  use "Pocco81/DAPInstall.nvim"
+  use "theHamsta/nvim-dap-virtual-text"
 end)
 
 local lines = vim.opt.lines._value
@@ -325,6 +329,14 @@ require('telescope').setup{
 require('alpha').setup(require'alpha.themes.dashboard'.opts)
 
 require('go').setup()
+
+require("dapui").setup()
+require("nvim-dap-virtual-text").setup()
+local dap_install = require("dap-install")
+dap_install.setup({
+	installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
+})
+dap_install.config("go", {})
 
 vim.opt.nu = true
 vim.opt.rnu = true
