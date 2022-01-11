@@ -340,7 +340,6 @@ vim.cmd([[
 filetype plugin indent on
 syntax enable
 colorscheme PaperColor
-hi Normal guibg=NONE ctermbg=NONE
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 
 vim.opt.foldlevel = 99  -- Open all folds
