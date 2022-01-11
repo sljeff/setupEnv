@@ -183,6 +183,8 @@ open `nvim` and
 
 ```
 :PackerInstall
+:TSInstall go
+:TSInstall python
 ```
 
 Some information about keys in this vimrc:
