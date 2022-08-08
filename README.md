@@ -58,9 +58,8 @@ add_newline = true
 style = "bg:white bold fg:black"
 
 # Replace the "❯" symbol in the prompt with "➜"
-[character]      # The name of the module we are configuring is "character"
-success_symbol = "[➜](bold green) "
-error_symbol = "[✗](bold red) "
+# [character]      # The name of the module we are configuring is "character"
+# symbol = "➜"     # The "symbol" segment is being set to "➜"
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -78,8 +77,6 @@ style = "bold blue"
 
 [python]
 style = "bold blue"
-pyenv_version_name = true
-pyenv_prefix = ""
 
 [cmd_duration]
 style = "bold blue"
@@ -258,45 +255,20 @@ nvim a.go # check gopls
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 ```
 
-# 6. docker
+# 6. podman (docker)
 
-## [macOS dmg](https://docs.docker.com/docker-for-mac/edge-release-notes/)
-
-## [ubuntu installation](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-engine---community)
+## [installation](https://podman.io/getting-started/installation)
 
 ```bash
-sudo apt-get purge docker-ce
-sudo apt-get remove docker docker-engine docker.io containerd runc
-sudo rm -rf /var/lib/docker
-
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-# 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88
-sudo apt-key fingerprint 0EBFCD88
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get -y install podman
+pip3 install podman-compose
 ```
 
-## [post-install](https://docs.docker.com/install/linux/linux-postinstall/)
+## post-install
 
 ```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-docker ps
-
-# maybe
-sudo chmod 666 /var/run/docker.sock
-sudo chown root:docker /var/run/docker.sock
+alias docker=podman
+alias docker-compose=podman-compose
 ```
 
 ## run mysql/redis

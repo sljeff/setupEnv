@@ -57,11 +57,7 @@ require('packer').startup(function()
 
   use 'khaveesh/vim-fish-syntax'
 
-  use 'ray-x/go.nvim'
-
-  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
-  use "Pocco81/DAPInstall.nvim"
-  use "theHamsta/nvim-dap-virtual-text"
+  use 'puremourning/vimspector'
 end)
 
 local lines = vim.opt.lines._value
@@ -101,7 +97,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.open_float()<CR>', opts)
   buf_set_keymap('n', '<space><C-p>', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
@@ -116,7 +112,7 @@ cmp.setup({
       vim.fn["vsnip#anonymous"](args.body)
     end,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
     ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -126,7 +122,7 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
-  },
+  }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'buffer' },
@@ -152,7 +148,7 @@ cmp.setup.cmdline(':', {
 })
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-local servers = { "pylsp", "clangd", "gopls" }
+local servers = { "pylsp", "clangd", "gopls", "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup({
     on_attach = on_attach,
@@ -163,6 +159,17 @@ for _, lsp in ipairs(servers) do
   })
 end
 require "lsp_signature".setup({})
+
+-- treesitter
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "lua", "go", "javascript", "python" },
+  sync_install = false,
+  auto_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
 
 vim.g.rainbow_active = 0
 vim.g.floaterm_width = 0.8
@@ -202,14 +209,12 @@ require'lualine'.setup{
 }
 require('cokeline').setup({
   default_hl = {
-    focused = {
-      fg = '#800080',
-      bg = '#ffffff',
-    },
-    unfocused = {
-      fg = '#3B78FF',
-      bg = '#D3D3D3',
-    },
+    fg = function(buffer)
+      return buffer.is_focused and "#800080" or "#3B78FF"
+    end,
+    bg = function(buffer)
+      return buffer.is_focused and "#ffffff" or "#D3D3D3"
+    end,
   },
   components = {
     {text = '| '},
@@ -217,24 +222,18 @@ require('cokeline').setup({
       text = function(buffer)
         return buffer.index .. " "
       end,
-      hl = {
-        style = function(buffer)
-          return buffer.is_focused and "bold" or nil
-        end,
-      },
+      style = function(buffer)
+        return buffer.is_focused and "bold" or nil
+      end,
     },
     {
       text = function(buffer) return buffer.devicon.icon end,
-      hl = {
-        fg = function(buffer) return buffer.devicon.color end,
-      },
+      fg = function(buffer) return buffer.devicon.color end,
     },
     {
       text = function(buffer) return buffer.unique_prefix end,
-      hl = {
-        fg = '#000000',
-        style = 'italic',
-      },
+      fg = '#000000',
+      style = 'italic',
     },
     {
       text = function(buffer) return buffer.filename end,
@@ -290,10 +289,10 @@ require('cokeline').setup({
   },
 })
 vim.api.nvim_set_keymap("n", "<Leader>m", ":noh<CR>", { noremap = true, })
-vim.api.nvim_set_keymap('n', '<S-Tab>',   '<Plug>(cokeline-focus-prev)',  { silent = true })
-vim.api.nvim_set_keymap('n', '<Tab>',     '<Plug>(cokeline-focus-next)',  { silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>p', '<Plug>(cokeline-switch-prev)', { silent = true })
--- vim.api.nvim_set_keymap('n', '<Leader>n', '<Plug>(cokeline-switch-next)', { silent = true })
+-- vim.api.nvim_set_keymap('n', '<S-Tab>',   '<Plug>(cokeline-focus-prev)',  { silent = true })
+-- vim.api.nvim_set_keymap('n', '<Tab>',     '<Plug>(cokeline-focus-next)',  { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>p', '<Plug>(cokeline-focus-prev)', { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>n', '<Plug>(cokeline-focus-next)', { silent = true })
 vim.api.nvim_set_keymap("n", "<Leader>d", ":bd<CR>", { noremap = true, })
 
 for i = 1,9 do
@@ -326,17 +325,8 @@ require('telescope').setup{
   }
 }
 
+vim.g.vimspector_enable_mappings = 'HUMAN'
 require('alpha').setup(require'alpha.themes.dashboard'.opts)
-
-require('go').setup()
-
-require("dapui").setup()
-require("nvim-dap-virtual-text").setup()
-local dap_install = require("dap-install")
-dap_install.setup({
-	installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
-})
-dap_install.config("go", {})
 
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -352,6 +342,7 @@ vim.cmd([[
 filetype plugin indent on
 syntax enable
 colorscheme PaperColor
+hi Normal guibg=NONE ctermbg=NONE
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 
 vim.opt.foldlevel = 99  -- Open all folds
