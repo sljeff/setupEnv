@@ -38,6 +38,12 @@ fish
 # logout and check
 ```
 
+```
+# fisher
+curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+fisher install evanlucas/fish-kubectl-completions jethrokuan/z laughedelic/pisces edc/bass
+```
+
 ## [starship](https://starship.rs/zh-tw/)
 
 ```bash
@@ -323,4 +329,15 @@ brew install derailed/k9s/k9s
 
 ```
 go install github.com/mfuentesg/ksd@latest
+```
+
+
+# 8. nodejs
+
+```
+curl -fsSL https://fnm.vercel.app/install | bash
+fnm completions --shell fish >> /home/jeff/.config/fish/conf.d/fnm.fish
+fnm install v18
+node --version
+npm i -g typescript-language-server
 ```
