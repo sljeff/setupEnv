@@ -138,6 +138,7 @@ tmux
 ```bash
 git config --global user.name sljeff
 git config --global user.email my@email.com
+git config --global init.defaultBranch main
 
 ssh-keygen
 cat ~/.ssh/id_rsa.pub
