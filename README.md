@@ -339,5 +339,5 @@ curl -fsSL https://fnm.vercel.app/install | bash
 fnm completions --shell fish >> /home/jeff/.config/fish/conf.d/fnm.fish
 fnm install v18
 node --version
-npm i -g typescript-language-server
+npm i -g typescript-language-server typescript
 ```
