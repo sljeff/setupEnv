@@ -60,6 +60,21 @@ require('packer').startup(function()
   use 'puremourning/vimspector'
 
   use 'isobit/vim-caddyfile'
+
+  use 'github/copilot.vim'
+
+  use({
+    "folke/noice.nvim",
+    event = "VimEnter",
+    config = function()
+      require("noice").setup()
+    end,
+    requires = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+      }
+  })
 end)
 
 local lines = vim.opt.lines._value
@@ -103,7 +118,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space><C-p>', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -151,7 +166,7 @@ cmp.setup.cmdline(':', {
   })
 })
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local servers = { "pylsp", "clangd", "gopls", "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup({
@@ -342,6 +357,7 @@ vim.opt.hidden = true
 vim.opt.encoding = 'utf-8'
 vim.opt.background = 'light'
 vim.opt.showmode = false
+vim.opt.mouse=""
 vim.cmd([[
 filetype plugin indent on
 syntax enable
@@ -350,3 +366,7 @@ hi Normal guibg=NONE ctermbg=NONE
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 
 vim.opt.foldlevel = 99  -- Open all folds
+
+require("notify").setup({
+  background_colour = "#000000",
+})
