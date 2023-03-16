@@ -276,3 +276,4 @@ autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 vim.opt.foldlevel = 99  -- Open all folds
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
+vim.opt.clipboard = 'unnamedplus'
