@@ -60,12 +60,11 @@ starship init fish | source
 # Don't print a new line at the start of the prompt
 add_newline = true
 
-[directory]
-style = "bg:white bold fg:black"
+command_timeout = 2000
 
 # Replace the "❯" symbol in the prompt with "➜"
 # [character]      # The name of the module we are configuring is "character"
-# symbol = "➜"     # The "symbol" segment is being set to "➜"
+# disabled = true
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -84,8 +83,31 @@ style = "bold blue"
 [python]
 style = "bold blue"
 
+[aws]
+style = "bold #ffb86c"
+
+[character]
+error_symbol = "[λ](bold #ff5555)"
+success_symbol = "[λ](bold #50fa7b)"
+
 [cmd_duration]
-style = "bold blue"
+style = "bold #f1fa8c"
+
+[directory]
+style = "bold #50fa7b"
+
+[git_branch]
+style = "bold #ff79c6"
+
+[git_status]
+style = "bold #ff5555"
+
+[hostname]
+style = "bold #bd93f9"
+
+[username]
+format = "[$user]($style) on "
+style_user = "bold #8be9fd"
 ```
 
 ```bash
