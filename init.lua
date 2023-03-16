@@ -3,6 +3,7 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   use 'flazz/vim-colorschemes'
+  use 'dracula/vim'
 
   use 'stephpy/vim-yaml'
 
@@ -29,7 +30,7 @@ require('packer').startup(function()
 
   use 'kyazdani42/nvim-web-devicons'
   use 'nvim-lualine/lualine.nvim'
-  use 'noib3/nvim-cokeline'
+  use 'akinsho/bufferline.nvim'
 
   use 'tpope/vim-fugitive'
 
@@ -202,7 +203,7 @@ vim.api.nvim_set_keymap("t", "<m-q>", "<C-\\><C-n>", { silent = true, noremap = 
 local gps = require("nvim-gps")
 gps.setup()
 
--- lualine and cokeline
+-- lualine and bufferline
 vim.opt.termguicolors = true
 require'lualine'.setup{
   sections = {
@@ -214,97 +215,16 @@ require'lualine'.setup{
     lualine_z = {'location'}
   },
 }
-require('cokeline').setup({
-  default_hl = {
-    fg = function(buffer)
-      return buffer.is_focused and "#800080" or "#3B78FF"
-    end,
-    bg = function(buffer)
-      return buffer.is_focused and "#ffffff" or "#D3D3D3"
-    end,
-  },
-  components = {
-    {text = '| '},
-    {
-      text = function(buffer)
-        return buffer.index .. " "
-      end,
-      style = function(buffer)
-        return buffer.is_focused and "bold" or nil
-      end,
-    },
-    {
-      text = function(buffer) return buffer.devicon.icon end,
-      fg = function(buffer) return buffer.devicon.color end,
-    },
-    {
-      text = function(buffer) return buffer.unique_prefix end,
-      fg = '#000000',
-      style = 'italic',
-    },
-    {
-      text = function(buffer) return buffer.filename end,
-    },
-    {
-      text = function(buffer)
-        local errors = buffer.diagnostics.errors
-        local warnings = buffer.diagnostics.warnings
-        local hints = buffer.diagnostics.hints
-        local infos = buffer.diagnostics.infos
-        if errors ~= 0 then
-          return "  " .. errors
-        elseif warnings ~= 0 then
-          return "  " .. warnings
-        elseif hints ~= 0 then
-          return "  " .. hints
-        elseif infos ~= 0 then
-          return "  " .. infos
-        end
-	return ""
-      end,
-      hl = {
-        fg = function(buffer)
-          local errors = buffer.diagnostics.errors
-          local warnings = buffer.diagnostics.warnings
-          local hints = buffer.diagnostics.hints
-          local infos = buffer.diagnostics.infos
-          if errors ~= 0 then
-            return "#EC5241"
-          elseif warnings ~= 0 then
-            return "#EFB839"
-          elseif hints ~= 0 then
-            return "#A3BA5E"
-          elseif infos ~= 0 then
-            return "#7EA9A7"
-          end
-        end
-      }
-    },
-    {
-      text = function(buffer)
-        return buffer.is_modified and " ●" or ""
-      end,
-      hl = {
-        fg = function(buffer)
-          return buffer.is_focused and '#ff0000'
-        end,
-      },
-    },
-    {
-      text = ' ',
-    }
-  },
-})
+require("bufferline").setup{}
 vim.api.nvim_set_keymap("n", "<Leader>m", ":noh<CR>", { noremap = true, })
--- vim.api.nvim_set_keymap('n', '<S-Tab>',   '<Plug>(cokeline-focus-prev)',  { silent = true })
--- vim.api.nvim_set_keymap('n', '<Tab>',     '<Plug>(cokeline-focus-next)',  { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>p', '<Plug>(cokeline-focus-prev)', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>n', '<Plug>(cokeline-focus-next)', { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>p', ':bp<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>n', ':bn<CR>', { silent = true })
 vim.api.nvim_set_keymap("n", "<Leader>d", ":bd<CR>", { noremap = true, })
 
 for i = 1,9 do
-  vim.api.nvim_set_keymap('n', ('<Leader>%s'):format(i), ('<Plug>(cokeline-focus-%s)'):format(i), { silent = true })
+  vim.api.nvim_set_keymap('n', ('<Leader>%s'):format(i), ('<cmd>lua require("bufferline").go_to_buffer(%s, true)<CR>'):format(i), { silent = true })
 end
+vim.api.nvim_set_keymap('n', '<Leader>0', '<cmd>lua require("bufferline").go_to_buffer(-1, true)<CR>', { silent = true })
 
 -- telescope
 vim.api.nvim_set_keymap("n", "<Leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", { noremap = true, })
@@ -343,14 +263,16 @@ vim.opt.backspace = 'indent,eol,start'
 -- Required for operations modifying multiple buffers like rename.
 vim.opt.hidden = true
 vim.opt.encoding = 'utf-8'
-vim.opt.background = 'light'
+-- vim.opt.background = 'dark'
 vim.opt.showmode = false
-vim.opt.mouse=""
+-- vim.opt.mouse=""
 vim.cmd([[
 filetype plugin indent on
 syntax enable
-colorscheme PaperColor
+colorscheme dracula
 hi Normal guibg=NONE ctermbg=NONE
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 
 vim.opt.foldlevel = 99  -- Open all folds
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
