@@ -40,7 +40,7 @@ require('packer').startup(function()
   use 'goolord/alpha-nvim'
 
   use 'nvim-treesitter/nvim-treesitter'
-  use 'SmiteshP/nvim-gps'
+  use 'SmiteshP/nvim-navic'
 
   use 'pseewald/vim-anyfold'
 
@@ -80,6 +80,7 @@ local nvim_lsp = require('lspconfig')
 local lspkind = require('lspkind')
 local cmp = require'cmp'
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local navic = require("nvim-navic")
 require('nvim-autopairs').setup{}
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -108,6 +109,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space><C-n>', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<C-m>d', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
+
+  navic.attach(client, bufnr)
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -207,15 +210,18 @@ vim.api.nvim_set_keymap("n", "<m-=>", ":FloatermToggle<CR>", { silent = true, no
 vim.api.nvim_set_keymap("t", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("t", "<m-q>", "<C-\\><C-n>", { silent = true, noremap = true, })
 
--- gps
-local gps = require("nvim-gps")
-gps.setup()
-
 -- lualine and bufferline
 vim.opt.termguicolors = true
 require'lualine'.setup{
   sections = {
-    lualine_a = {'mode', { gps.get_location, cond = gps.is_available }},
+    lualine_a = {'mode', {
+      function()
+        return navic.get_location()
+      end,
+      cond = function()
+        return navic.is_available()
+      end
+    }},
     lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_diagnostic'}}},
     lualine_c = {{'filename', file_status = true, path = 1, shorting_target = 40}},
     lualine_x = {'encoding', 'fileformat', 'filetype'},
