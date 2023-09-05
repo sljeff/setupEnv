@@ -3,7 +3,7 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   use 'flazz/vim-colorschemes'
-  use 'dracula/vim'
+  use { "catppuccin/nvim", as = "catppuccin" }
 
   use 'stephpy/vim-yaml'
 
@@ -30,7 +30,8 @@ require('packer').startup(function()
 
   use 'kyazdani42/nvim-web-devicons'
   use 'nvim-lualine/lualine.nvim'
-  use 'akinsho/bufferline.nvim'
+  use 'lewis6991/gitsigns.nvim' -- OPTIONAL: for git status
+  use 'romgrk/barbar.nvim'
 
   use 'tpope/vim-fugitive'
 
@@ -62,7 +63,8 @@ require('packer').startup(function()
 
   use 'isobit/vim-caddyfile'
 
-  use 'github/copilot.vim'
+  -- use 'github/copilot.vim'
+  use 'Exafunction/codeium.vim'
 
 end)
 
@@ -167,7 +169,7 @@ cmp.setup.cmdline(':', {
 })
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local servers = { "pylsp", "clangd", "gopls", "tsserver" }
+local servers = { "pylsp", "clangd", "gopls", "tsserver" , "solidity" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup({
     on_attach = on_attach,
@@ -181,7 +183,7 @@ require "lsp_signature".setup({})
 
 -- treesitter
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "lua", "go", "javascript", "python" },
+  ensure_installed = { "lua", "go", "javascript", "python", "solidity" },
   sync_install = false,
   auto_install = true,
   highlight = {
@@ -210,9 +212,17 @@ vim.api.nvim_set_keymap("n", "<m-=>", ":FloatermToggle<CR>", { silent = true, no
 vim.api.nvim_set_keymap("t", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("t", "<m-q>", "<C-\\><C-n>", { silent = true, noremap = true, })
 
--- lualine and bufferline
+-- lualine and barbar
+require("catppuccin").setup({
+    integrations = {
+        barbar = true,
+    }
+})
 vim.opt.termguicolors = true
 require'lualine'.setup{
+  options = {
+      theme = "catppuccin-latte"
+  },
   sections = {
     lualine_a = {'mode', {
       function()
@@ -229,16 +239,15 @@ require'lualine'.setup{
     lualine_z = {'location'}
   },
 }
-require("bufferline").setup{}
-vim.api.nvim_set_keymap("n", "<Leader>m", ":noh<CR>", { noremap = true, })
-vim.api.nvim_set_keymap('n', '<Leader>p', ':bp<CR>', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>n', ':bn<CR>', { silent = true })
-vim.api.nvim_set_keymap("n", "<Leader>d", ":bd<CR>", { noremap = true, })
+vim.api.nvim_set_keymap("n", "<Leader>m", "<cmd>noh<CR>", { noremap = true, })
+vim.api.nvim_set_keymap('n', '<Leader>p', '<cmd>BufferPrevious<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>n', '<cmd>BufferNext<CR>', { silent = true })
+vim.api.nvim_set_keymap("n", "<Leader>d", "<cmd>BufferClose<CR>", { noremap = true, })
 
 for i = 1,9 do
-  vim.api.nvim_set_keymap('n', ('<Leader>%s'):format(i), ('<cmd>lua require("bufferline").go_to_buffer(%s, true)<CR>'):format(i), { silent = true })
+  vim.api.nvim_set_keymap('n', ('<Leader>%s'):format(i), ('<cmd>BufferGoto %s<CR>'):format(i), { silent = true })
 end
-vim.api.nvim_set_keymap('n', '<Leader>0', '<cmd>lua require("bufferline").go_to_buffer(-1, true)<CR>', { silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>0', '<cmd>BufferLast<CR>', { silent = true })
 
 -- telescope
 vim.api.nvim_set_keymap("n", "<Leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", { noremap = true, })
@@ -269,6 +278,12 @@ require('telescope').setup{
 vim.g.vimspector_enable_mappings = 'HUMAN'
 require('alpha').setup(require'alpha.themes.dashboard'.opts)
 
+-- copilot
+-- vim.g.copilot_filetypes = {
+--   yaml = true,
+--   markdown = true,
+-- }
+
 vim.opt.nu = true
 vim.opt.rnu = true
 vim.opt.hlsearch = true
@@ -277,13 +292,13 @@ vim.opt.backspace = 'indent,eol,start'
 -- Required for operations modifying multiple buffers like rename.
 vim.opt.hidden = true
 vim.opt.encoding = 'utf-8'
--- vim.opt.background = 'dark'
+vim.opt.background = 'light'
 vim.opt.showmode = false
 -- vim.opt.mouse=""
 vim.cmd([[
 filetype plugin indent on
 syntax enable
-colorscheme dracula
+colorscheme catppuccin-latte
 hi Normal guibg=NONE ctermbg=NONE
 autocmd Filetype go,python,yaml,javascript,cmake,make,ruby AnyFoldActivate]])
 
