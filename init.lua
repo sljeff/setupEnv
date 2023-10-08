@@ -169,7 +169,7 @@ cmp.setup.cmdline(':', {
 })
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local servers = { "pylsp", "clangd", "gopls", "tsserver" , "solidity" }
+local servers = { "pylsp", "clangd", "gopls" , "solidity" , "dartls" , "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup({
     on_attach = on_attach,
@@ -203,10 +203,10 @@ else
   vim.api.nvim_set_keymap("n", "<C-A-n>", ":FloatermNew --opener=split xplr<CR>", { silent = true, noremap = true, })
 end
 vim.api.nvim_set_keymap("n", "<C-n>", ":FloatermNew --opener=edit xplr<CR>", { silent = true, noremap = true, })
-vim.api.nvim_set_keymap("n", "ccc", ":FloatermNew<CR>", { silent = true, noremap = true, })
-vim.api.nvim_set_keymap("t", "ccc", "<C-\\><C-n>:FloatermNew<CR>", { silent = true, noremap = true, })
-vim.api.nvim_set_keymap("t", "ppp", "<C-\\><C-n>:FloatermPrev<CR>", { silent = true, noremap = true, })
-vim.api.nvim_set_keymap("t", "nnn", "<C-\\><C-n>:FloatermNext<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("n", "<m-c>", ":FloatermNew<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "<m-c>", "<C-\\><C-n>:FloatermNew<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "<m-p>", "<C-\\><C-n>:FloatermPrev<CR>", { silent = true, noremap = true, })
+vim.api.nvim_set_keymap("t", "<m-n>", "<C-\\><C-n>:FloatermNext<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("i", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("n", "<m-=>", ":FloatermToggle<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("t", "<m-=>", "<C-\\><C-n>:FloatermToggle<CR>", { silent = true, noremap = true, })
